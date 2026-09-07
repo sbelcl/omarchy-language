@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "imnos.language",
+  "name": "Language",
+  "version": "1.0.0",
+  "author": "imnos",
+  "description": "Pick the system language and regional formats from the bar",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "Panel.qml" },
+  "barWidget": {
+    "displayName": "Language",
+    "description": "System language and regional formats",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": { "display": "Code" },
+    "schema": [
+      {
+        "key": "display",
+        "type": "enum",
+        "label": "Bar label",
+        "options": ["Code", "Icon"],
+        "defaultValue": "Code",
+        "description": "Code shows the language code (EN, SL); Icon shows a globe glyph instead."
+      }
+    ]
+  }
+}
