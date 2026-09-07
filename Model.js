@@ -11,6 +11,11 @@ var FORMAT_VARS = ["LC_TIME", "LC_NUMERIC", "LC_MONETARY", "LC_PAPER", "LC_MEASU
 // The value the Formats dropdown carries while it is following the language.
 var FOLLOW_LANGUAGE = ""
 
+// Everything a locale choice here can move, LANG first.
+function localeVarNames() {
+  return ["LANG"].concat(FORMAT_VARS)
+}
+
 // Rows out of locales.awk: "name\tlanguage\tterritory" per line.
 function parseLocales(text) {
   var rows = []
@@ -142,6 +147,36 @@ function setLocaleArgs(lang, formats) {
   return args
 }
 
+// A session reads its locale once, at login. Anything that has changed since
+// is pending a log out -- whether this panel changed it, another session did,
+// or someone edited /etc/locale.conf by hand. Comparing the two is what makes
+// the reminder honest: state that only remembered our own changes would go
+// quiet across a shell restart while the session was still stale.
+//
+// An unset LC_* follows LANG, so it is compared against LANG rather than
+// against nothing; a variable missing on both sides agrees by definition.
+function sessionIsStale(systemVars, sessionVars) {
+  var names = localeVarNames()
+  for (var i = 0; i < names.length; i++) {
+    var wanted = String((systemVars || {})[names[i]] || "") || String((systemVars || {}).LANG || "")
+    var have = String((sessionVars || {})[names[i]] || "") || String((sessionVars || {}).LANG || "")
+    if (wanted === "" || have === "") continue
+    if (!sameLocale(wanted, have)) return true
+  }
+  return false
+}
+
+// "" when the session is current. Naming the language the session is still
+// running beats a bare "log out": it says what the log out is worth.
+function staleMessage(rows, systemVars, sessionVars) {
+  if (!sessionIsStale(systemVars, sessionVars)) return ""
+  var systemLang = String((systemVars || {}).LANG || "")
+  var sessionLang = String((sessionVars || {}).LANG || "")
+  if (!sameLocale(systemLang, sessionLang))
+    return "Session is still " + describe(rows, sessionLang) + ". Log out and back in to switch."
+  return "Log out and back in to apply the new formats."
+}
+
 // polkit refusals and the shell's own "no agent" case are the failures worth
 // naming: everything else localectl says is already a sentence.
 function errorMessage(stderr, exitCode) {
@@ -156,6 +191,9 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     FORMAT_VARS: FORMAT_VARS,
     FOLLOW_LANGUAGE: FOLLOW_LANGUAGE,
+    localeVarNames: localeVarNames,
+    sessionIsStale: sessionIsStale,
+    staleMessage: staleMessage,
     parseLocales: parseLocales,
     parseSystemLocale: parseSystemLocale,
     localeKey: localeKey,

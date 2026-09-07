@@ -82,7 +82,13 @@ omarchy plugin validate .   # manifest against the schema the shell enforces
 
 `Model.js` is deliberately Qt-free so the parsing, matching and argument
 building are testable under node; `Panel.qml` holds only the wiring and the
-UI. Saving any file under `~/.config/omarchy/plugins/` hot-reloads the plugin.
+UI.
+
+Saving a file under `~/.config/omarchy/plugins/` hot-reloads the plugin, but
+a widget already placed on the bar can keep its existing instance through the
+reload — the shell logs `Local plugin changed, reloading` and nothing visibly
+changes. `omarchy-restart-shell` is the one way to be sure you are looking at
+the code you just wrote.
 
 ## License
 

@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import Quickshell.Io
 import qs.Ui
 import qs.Commons
@@ -34,12 +35,27 @@ Panel {
   property var locales: []           // [{ name, language, territory }]
   property var localeVars: ({})      // LANG / LC_* as localectl reports them
   property bool applying: false
-  property bool needsLogout: false
   property string errorText: ""
   property string applyStderr: ""
   property int applyExitCode: 0
   property bool cursorActive: false
   property string focusSection: "language"
+
+  // The locale this session was handed at login. The shell process inherits
+  // it from the session, and nothing short of logging out replaces it, which
+  // is exactly what makes it the right thing to compare against.
+  readonly property var sessionVars: {
+    var names = Model.localeVarNames()
+    var out = {}
+    for (var i = 0; i < names.length; i++) {
+      var value = Quickshell.env(names[i])
+      if (value) out[names[i]] = String(value)
+    }
+    return out
+  }
+
+  readonly property string staleText: Model.staleMessage(locales, localeVars, sessionVars)
+  readonly property bool needsLogout: staleText !== ""
 
   readonly property string systemLang: String(localeVars.LANG || "")
   readonly property string languageValue: Model.rowValue(locales, systemLang)
@@ -79,12 +95,7 @@ Panel {
 
   function finishApply() {
     applying = false
-    if (applyExitCode === 0) {
-      needsLogout = true
-      errorText = ""
-    } else {
-      errorText = Model.errorMessage(applyStderr, applyExitCode)
-    }
+    errorText = applyExitCode === 0 ? "" : Model.errorMessage(applyStderr, applyExitCode)
     // Either way, re-read: a partial success (LANG took, an LC_* did not)
     // should leave the dropdowns showing what actually landed.
     refresh()
@@ -341,7 +352,7 @@ Panel {
           text: {
             if (root.errorText !== "") return root.errorText
             if (root.applying) return "Applying... a language that has never been generated takes a moment."
-            return "Log out and back in to finish switching."
+            return root.staleText
           }
           color: root.errorText !== "" ? Color.urgent : Qt.darker(root.bar.foreground, 1.3)
           font.family: root.bar.fontFamily

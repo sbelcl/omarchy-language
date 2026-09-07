@@ -129,6 +129,53 @@ test("setLocaleArgs spells out every format variable it owns", () => {
   assert.deepEqual(args.slice(2), M.FORMAT_VARS.map(v => v + "=en_GB.UTF-8"))
 })
 
+// --- sessionIsStale / staleMessage -----------------------------------------
+
+test("sessionIsStale ignores codeset spelling", () => {
+  assert.equal(M.sessionIsStale({ LANG: "sl_SI.UTF-8" }, { LANG: "sl_SI.utf8" }), false)
+})
+
+test("sessionIsStale catches a language changed under a running session", () => {
+  assert.equal(M.sessionIsStale({ LANG: "sl_SI.UTF-8" }, { LANG: "en_US.UTF-8" }), true)
+})
+
+test("sessionIsStale compares an unset LC_* against LANG on both sides", () => {
+  // Formats pinned system-side, still following LANG in the session.
+  assert.equal(M.sessionIsStale(
+    { LANG: "sl_SI.UTF-8", LC_TIME: "en_GB.UTF-8" },
+    { LANG: "sl_SI.UTF-8" }), true)
+  // Formats dropped system-side, still pinned in the session.
+  assert.equal(M.sessionIsStale(
+    { LANG: "sl_SI.UTF-8" },
+    { LANG: "sl_SI.UTF-8", LC_TIME: "en_GB.UTF-8" }), true)
+  // Same on both sides, spelled differently.
+  assert.equal(M.sessionIsStale(
+    { LANG: "sl_SI.UTF-8", LC_TIME: "sl_SI.UTF-8" },
+    { LANG: "sl_SI.UTF-8" }), false)
+})
+
+test("sessionIsStale says nothing when it cannot tell", () => {
+  assert.equal(M.sessionIsStale({ LANG: "sl_SI.UTF-8" }, {}), false)
+  assert.equal(M.sessionIsStale({}, { LANG: "sl_SI.UTF-8" }), false)
+  assert.equal(M.sessionIsStale(undefined, undefined), false)
+})
+
+test("staleMessage names the language the session is still running", () => {
+  assert.equal(
+    M.staleMessage(rows, { LANG: "sl_SI.UTF-8" }, { LANG: "en_US.UTF-8" }),
+    "Session is still American English (United States). Log out and back in to switch.")
+})
+
+test("staleMessage says formats when only the formats moved", () => {
+  assert.equal(
+    M.staleMessage(rows, { LANG: "sl_SI.UTF-8", LC_TIME: "en_GB.UTF-8" }, { LANG: "sl_SI.UTF-8" }),
+    "Log out and back in to apply the new formats.")
+})
+
+test("staleMessage is empty for a current session", () => {
+  assert.equal(M.staleMessage(rows, { LANG: "sl_SI.UTF-8" }, { LANG: "sl_SI.utf8" }), "")
+})
+
 // --- errorMessage ----------------------------------------------------------
 
 test("errorMessage names a polkit refusal", () => {
