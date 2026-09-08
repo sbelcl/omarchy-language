@@ -37,9 +37,19 @@ Panel {
   property bool applying: false
   property string errorText: ""
   property string applyStderr: ""
+  property string menuError: ""
   property int applyExitCode: 0
   property bool cursorActive: false
   property string focusSection: "language"
+
+  // `menu-translate status` output: the Omarchy menu is the one surface in
+  // the shell that is data rather than QML string literals, so it is the one
+  // surface a plugin can translate. Everything else stays English.
+  property var menuStatus: ({ state: "off", locale: "", rows: 0, available: [] })
+  property bool menuBusy: false
+  readonly property string menuTable: Model.menuTableFor(menuStatus.available, systemLang)
+  readonly property bool menuAvailable: menuTable !== ""
+  readonly property bool menuOn: menuStatus.state !== "off"
 
   // The locale this session was handed at login. The shell process inherits
   // it from the session, and nothing short of logging out replaces it, which
@@ -64,14 +74,37 @@ Panel {
   readonly property var languageOptions: Model.options(locales)
   readonly property var formatOptions: Model.formatOptions(locales)
 
-  // Sections the cursor can reach. The log-out row only exists once there is
-  // something to log out for, so it joins and leaves the ring with the row.
-  readonly property var sections: needsLogout
-    ? ["language", "formats", "logout"]
-    : ["language", "formats"]
+  // Sections the cursor can reach. Rows that are not on screen are not in the
+  // ring: the log-out row only exists once there is something to log out for,
+  // and the refresh only while the copied menu has fallen behind.
+  readonly property var sections: {
+    var list = ["language", "formats"]
+    if (menuAvailable) list.push("menu")
+    if (menuStatus.state === "stale") list.push("menu-refresh")
+    if (needsLogout) list.push("logout")
+    return list
+  }
 
   function refresh() {
     if (!statusProc.running) statusProc.running = true
+    if (!menuStatusProc.running) menuStatusProc.running = true
+  }
+
+  function runMenuTranslate(verb, argument) {
+    if (menuBusy) return
+    menuBusy = true
+    var command = ["bash", pluginDir + "menu-translate", verb]
+    if (argument) command.push(argument)
+    menuProc.command = command
+    menuProc.running = true
+  }
+
+  // The shell watches the extension file, so the menu picks this up without a
+  // restart -- nothing to log out for here.
+  function toggleMenuTranslation() {
+    if (!menuAvailable) return
+    if (menuOn) runMenuTranslate("remove")
+    else runMenuTranslate("apply", menuTable)
   }
 
   function loadLocales() {
@@ -117,6 +150,8 @@ Panel {
   function activateCursor() {
     if (focusSection === "language") languageDropdown.toggle()
     else if (focusSection === "formats") formatsDropdown.toggle()
+    else if (focusSection === "menu") toggleMenuTranslation()
+    else if (focusSection === "menu-refresh") runMenuTranslate("apply", menuTable)
     else if (focusSection === "logout") logOut()
   }
 
@@ -158,6 +193,30 @@ Panel {
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: root.localeVars = Model.parseSystemLocale(text)
+    }
+  }
+
+  Process {
+    id: menuStatusProc
+    command: ["bash", root.pluginDir + "menu-translate", "status"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: root.menuStatus = Model.parseMenuStatus(text)
+    }
+  }
+
+  Process {
+    id: menuProc
+    stderr: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: root.menuError = String(text || "").trim()
+    }
+    onExited: function(exitCode) {
+      root.menuBusy = false
+      if (exitCode !== 0 && root.menuError === "")
+        root.menuError = "Could not write the menu translation"
+      if (exitCode === 0) root.menuError = ""
+      menuStatusProc.running = true
     }
   }
 
@@ -338,6 +397,75 @@ Panel {
               if (isHovered) { root.cursorActive = true; root.focusSection = "formats" }
             }
             onChanged: function(picked) { root.applyLocale(root.languageValue, picked) }
+          }
+        }
+
+        // ---------- Omarchy menu ----------
+        PanelSeparator {
+          visible: root.menuAvailable
+          foreground: root.bar.foreground
+        }
+
+        Column {
+          visible: root.menuAvailable
+          width: parent.width
+          spacing: Style.space(8)
+
+          PanelSectionHeader {
+            text: "OMARCHY MENU"
+            foreground: root.bar.foreground
+            fontFamily: root.bar.fontFamily
+          }
+
+          Item {
+            width: parent.width
+            implicitHeight: Math.max(menuSwitch.implicitHeight, menuCaption.implicitHeight)
+
+            ToggleSwitch {
+              id: menuSwitch
+              anchors.left: parent.left
+              anchors.verticalCenter: parent.verticalCenter
+              checked: root.menuOn
+              busy: root.menuBusy
+              foreground: root.bar.foreground
+              hasCursor: root.cursorActive && root.focusSection === "menu"
+              onHovered: function(isHovered) {
+                if (isHovered) { root.cursorActive = true; root.focusSection = "menu" }
+              }
+              onToggled: root.toggleMenuTranslation()
+            }
+
+            Text {
+              id: menuCaption
+              anchors.left: menuSwitch.right
+              anchors.leftMargin: Style.space(12)
+              anchors.right: parent.right
+              anchors.verticalCenter: parent.verticalCenter
+              wrapMode: Text.WordWrap
+              textFormat: Text.PlainText
+              text: root.menuError !== ""
+                ? root.menuError
+                : Model.menuStatusText(root.menuStatus, root.locales, root.systemLang)
+              color: root.menuError !== "" ? Color.urgent : Qt.darker(root.bar.foreground, 1.3)
+              font.family: root.bar.fontFamily
+              font.pixelSize: Style.font.bodySmall
+            }
+          }
+
+          Button {
+            visible: root.menuStatus.state === "stale"
+            width: parent.width
+            text: "Refresh translation"
+            iconText: "󰑐"
+            fontSize: Style.font.bodySmall
+            foreground: root.bar.foreground
+            fontFamily: root.bar.fontFamily
+            bordered: true
+            hasCursor: root.cursorActive && root.focusSection === "menu-refresh"
+            onClicked: root.runMenuTranslate("apply", root.menuTable)
+            onHovered: function(isHovered) {
+              if (isHovered) { root.cursorActive = true; root.focusSection = "menu-refresh" }
+            }
           }
         }
 

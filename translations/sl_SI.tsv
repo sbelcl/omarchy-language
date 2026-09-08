@@ -1,0 +1,160 @@
+# Slovenian menu labels for the Omarchy menu.
+#
+# English<TAB>Slovenian. Keyed by the English string rather than by row id, so
+# a word that repeats across the menu is translated once and a row Omarchy
+# adds later using a word already in here translates itself. Anything absent
+# stays English, which is the right answer for product names: Steam, Docker,
+# Tailscale and the language names under Dev are not words to translate.
+#
+# The English string stays searchable -- it is written into each row's
+# description -- so typing "network" still finds Omrežje.
+
+# Root
+Apps	Programi
+Learn	Učenje
+Capture	Zajem
+Trigger	Sprožilec
+Style	Videz
+Setup	Nastavitve
+System	Sistem
+Go	Pojdi
+
+# Common actions
+Toggle	Preklopi
+Install	Namesti
+Remove	Odstrani
+Update	Posodobi
+Restart	Znova zaženi
+Restore Default	Obnovi privzeto
+Reset to default	Ponastavi na privzeto
+Set one	Nastavi
+Set From Image	Nastavi iz slike
+Show all	Pokaži vse
+Clear all	Počisti vse
+Share	Deli
+Receive	Prejmi
+Custom	Po meri
+Defaults	Privzeto
+Config	Nastavitve
+About	O sistemu
+Community	Skupnost
+Channel	Kanal
+
+# Capture
+Screenshot	Zaslonska slika
+Screenrecord	Snemanje zaslona
+Stop Screenrecording	Ustavi snemanje
+Transcode	Prekodiraj
+Crash Capture	Zajem sesutja
+Region	Območje
+Window	Okno
+Display	Zaslon
+With no audio	Brez zvoka
+With desktop audio	Z zvokom namizja
+With desktop + microphone audio	Z zvokom namizja in mikrofona
+With desktop + microphone audio + webcam	Z zvokom namizja, mikrofona in s spletno kamero
+
+# Trigger / tools
+Emoji	Emodži
+Clipboard	Odložišče
+Reminder	Opomnik
+Dictation	Narekovanje
+Edit Text	Uredi besedilo
+Text	Besedilo
+File	Datoteka
+Folder	Mapa
+Password	Geslo
+QR Code	Koda QR
+Web App	Spletna aplikacija
+
+# Style
+Theme	Tema
+Extra Themes	Dodatne teme
+Background	Ozadje
+Font	Pisava
+Color	Barva
+Transparency	Prosojnost
+Window Gaps	Razmiki oken
+Menu Bar	Menijska vrstica
+Position	Položaj
+Top	Zgoraj
+Bottom	Spodaj
+Left	Levo
+Right	Desno
+Battery Percentage	Odstotek baterije
+Workspace Layout	Postavitev delovnih površin
+1-Window Ratio	Razmerje enega okna
+high	visoka
+mid	srednja
+low	nizka
+
+# Setup
+Monitors	Zasloni
+Laptop Display	Zaslon prenosnika
+Mirror Display	Zrcali zaslon
+Keybindings	Bližnjice
+Input	Vnos
+Touchpad	Sledilna ploščica
+Trackpad	Sledilna ploščica
+Touchpad Haptics	Odziv sledilne ploščice
+Touchscreen	Zaslon na dotik
+Network	Omrežje
+Wi-Fi	Wi-Fi
+Nightlight	Nočna svetloba
+Screensaver	Ohranjevalnik zaslona
+Stay Awake	Ostani buden
+Notifications	Obvestila
+Timezone	Časovni pas
+Time	Čas
+Security	Varnost
+Fingerprint	Prstni odtis
+Drive Encryption	Šifriranje diska
+Passwordless Sudo	Sudo brez gesla
+Sudoless Docker	Docker brez sudo
+Direct Boot	Neposredni zagon
+Hybrid GPU	Hibridni GPE
+Hardware	Strojna oprema
+Firmware	Vdelana programska oprema
+Xbox Controllers	Krmilniki Xbox
+Preinstalls	Prednameščeno
+Default Agent	Privzeti agent
+Default Browser	Privzeti brskalnik
+Default Editor	Privzeti urejevalnik
+Default Terminal	Privzeti terminal
+Browser	Brskalnik
+Editor	Urejevalnik
+Terminal	Terminal
+Agent	Agent
+Shell	Lupina
+Plugins	Vtičniki
+Add Plugin	Dodaj vtičnik
+Remove Plugin	Odstrani vtičnik
+Enable Plugin	Omogoči vtičnik
+Disable Plugin	Onemogoči vtičnik
+Clone Plugin	Kloniraj vtičnik
+Service	Storitev
+Services	Storitve
+Speed Test	Test hitrosti
+Network Speed Test	Test hitrosti omrežja
+Disk Speed Test	Test hitrosti diska
+Process	Proces
+Package	Paket
+User	Uporabnik
+Audio	Zvok
+
+# System
+Lock	Zakleni
+Unlock	Odkleni
+Logout	Odjava
+Suspend	Stanje pripravljenosti
+Hibernate	Mirovanje
+Reboot	Ponovni zagon
+Shutdown	Izklop
+Reset Computer	Ponastavi računalnik
+Windows	Okna
+Gaming	Igre
+Development	Razvoj
+Dev	Razvoj
+RetroArch Game Launcher	Zaganjalnik iger RetroArch
+Chromium Account	Račun Chromium
+Docker DB	Podatkovna baza Docker

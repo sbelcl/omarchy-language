@@ -191,6 +191,99 @@ test("errorMessage passes localectl's own sentence through", () => {
   assert.equal(M.errorMessage("", 3), "Could not set the system language (exit 3)")
 })
 
+// --- menu status -----------------------------------------------------------
+
+test("parseMenuStatus reads the status line", () => {
+  assert.deepEqual(
+    M.parseMenuStatus("state=stale locale=sl_SI rows=320 available=sl_SI,de_DE"),
+    { state: "stale", locale: "sl_SI", rows: 320, available: ["sl_SI", "de_DE"] })
+})
+
+test("parseMenuStatus copes with nothing installed", () => {
+  assert.deepEqual(
+    M.parseMenuStatus("state=off locale= rows=0 available="),
+    { state: "off", locale: "", rows: 0, available: [] })
+})
+
+test("menuTableFor matches a table to the locale in force", () => {
+  assert.equal(M.menuTableFor(["sl_SI"], "sl_SI.UTF-8"), "sl_SI")
+  assert.equal(M.menuTableFor(["sl_SI"], "sl_SI"), "sl_SI")
+  assert.equal(M.menuTableFor(["sl_SI"], "de_DE.UTF-8"), "")
+  assert.equal(M.menuTableFor([], "sl_SI.UTF-8"), "")
+})
+
+test("menuStatusText never implies more than the menu moves", () => {
+  const on = { state: "on", rows: 320, available: ["sl_SI"] }
+  assert.match(M.menuStatusText(on, rows, "sl_SI.UTF-8"), /320 menu rows.*stay English/)
+  assert.match(
+    M.menuStatusText({ state: "stale", rows: 320, available: ["sl_SI"] }, rows, "sl_SI.UTF-8"),
+    /^Out of date/)
+  assert.match(
+    M.menuStatusText({ state: "off", rows: 0, available: [] }, rows, "sl_SI.UTF-8"),
+    /^No menu translation for Slovenian \(Slovenia\)/)
+})
+
+// --- menu-translate --------------------------------------------------------
+//
+// The generator's whole reason for copying rows wholesale is that an override
+// which drops a field drops it for real: the row keeps its translated label
+// and loses the action behind it. So the test is not "does it write a file"
+// but "does the shell's own merge still produce the rows Omarchy shipped".
+
+test("menu-translate produces overrides the shell merges without damage", () => {
+  const fs = require("node:fs")
+  const os = require("node:os")
+  const vm = require("node:vm")
+  const menuModel = "/usr/share/omarchy/shell/plugins/menu/MenuModel.js"
+  const defaultMenu = "/usr/share/omarchy/default/omarchy/omarchy-menu.jsonc"
+  if (!fs.existsSync(menuModel) || !fs.existsSync(defaultMenu))
+    return console.log("    (skipped: no Omarchy menu to translate)")
+
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "language-test-"))
+  const extensions = path.join(home, ".config/omarchy/extensions")
+  fs.mkdirSync(extensions, { recursive: true })
+  const userMenu = path.join(extensions, "omarchy-menu.jsonc")
+  // A row of the user's own, to be carried through untouched.
+  fs.writeFileSync(userMenu, '{\n  // keep me\n  "mine": {"icon":"M","label":"Mine","action":"true"},\n}\n')
+
+  const run = (...args) => execFileSync("bash", [path.join(__dirname, "..", "menu-translate"), ...args],
+    { encoding: "utf8", env: { ...process.env, HOME: home } })
+
+  run("apply", "sl_SI")
+  assert.match(run("status"), /state=on locale=sl_SI rows=\d+/)
+
+  const ctx = { console }
+  vm.createContext(ctx)
+  vm.runInContext(fs.readFileSync(menuModel, "utf8"), ctx)
+
+  const defaults = ctx.parseMenuJsonc(fs.readFileSync(defaultMenu, "utf8"))
+  const user = ctx.parseMenuJsonc(fs.readFileSync(userMenu, "utf8"))
+  assert.ok(user.length > defaults.length, "user file should carry every default row plus their own")
+
+  const merged = ctx.mergeMenuSources(defaults, user).items
+  let translated = 0
+  for (const row of defaults) {
+    const after = merged[row.id]
+    for (const key of ["icon", "iconFont", "action", "target", "provider", "when", "checked", "kind", "parent"])
+      assert.deepEqual(after[key], row[key], row.id + " lost its " + key)
+    assert.deepEqual(after.aliases, row.aliases, row.id + " lost its aliases")
+    if (after.label !== row.label) translated++
+  }
+  assert.ok(translated > 100, "expected most rows translated, got " + translated)
+
+  // The user's own row, and their comment, survive the round trip.
+  assert.equal(merged.mine.action, "true")
+  assert.match(fs.readFileSync(userMenu, "utf8"), /\/\/ keep me/)
+
+  run("remove")
+  assert.match(run("status"), /state=off/)
+  const after = ctx.parseMenuJsonc(fs.readFileSync(userMenu, "utf8"))
+  assert.equal(after.length, 1, "removing should leave only the user's own row")
+  assert.equal(after[0].id, "mine")
+
+  fs.rmSync(home, { recursive: true, force: true })
+})
+
 // --- locales.awk -----------------------------------------------------------
 //
 // The scanner is half the model: if it stops producing the names SUPPORTED

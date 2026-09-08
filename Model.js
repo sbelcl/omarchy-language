@@ -177,6 +177,45 @@ function staleMessage(rows, systemVars, sessionVars) {
   return "Log out and back in to apply the new formats."
 }
 
+// `menu-translate status` prints one line of key=value pairs.
+function parseMenuStatus(text) {
+  var out = { state: "off", locale: "", rows: 0, available: [] }
+  var line = String(text || "").trim()
+  var pairs = line.split(/\s+/)
+  for (var i = 0; i < pairs.length; i++) {
+    var cut = pairs[i].indexOf("=")
+    if (cut < 1) continue
+    var key = pairs[i].substring(0, cut)
+    var value = pairs[i].substring(cut + 1)
+    if (key === "state") out.state = value
+    else if (key === "locale") out.locale = value
+    else if (key === "rows") out.rows = parseInt(value, 10) || 0
+    else if (key === "available") out.available = value === "" ? [] : value.split(",")
+  }
+  return out
+}
+
+// Tables are named for the locale without its codeset, the same shortening
+// menu-translate does, so sl_SI.UTF-8 and sl_SI both find sl_SI.tsv.
+function menuTableFor(available, lang) {
+  var key = localeKey(lang)
+  for (var i = 0; i < (available || []).length; i++) {
+    if (localeKey(available[i]) === key) return available[i]
+  }
+  return ""
+}
+
+// The menu is the only translatable surface in the shell, so the panel says
+// so plainly rather than implying the whole desktop moves with it.
+function menuStatusText(status, rows, lang) {
+  var table = menuTableFor(status.available, lang)
+  if (table === "") return "No menu translation for " + describe(rows, lang) + " yet."
+  if (status.state === "stale")
+    return "Out of date: Omarchy's menu changed since these " + status.rows + " rows were copied."
+  if (status.state === "on") return status.rows + " menu rows translated. Bar and panels stay English."
+  return "Translate the Omarchy menu. Bar and panels stay English."
+}
+
 // polkit refusals and the shell's own "no agent" case are the failures worth
 // naming: everything else localectl says is already a sentence.
 function errorMessage(stderr, exitCode) {
@@ -192,6 +231,9 @@ if (typeof module !== "undefined" && module.exports) {
     FORMAT_VARS: FORMAT_VARS,
     FOLLOW_LANGUAGE: FOLLOW_LANGUAGE,
     localeVarNames: localeVarNames,
+    parseMenuStatus: parseMenuStatus,
+    menuTableFor: menuTableFor,
+    menuStatusText: menuStatusText,
     sessionIsStale: sessionIsStale,
     staleMessage: staleMessage,
     parseLocales: parseLocales,
