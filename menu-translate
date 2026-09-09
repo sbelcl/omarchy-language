@@ -108,6 +108,23 @@ managed_block() {
     | "  \($id | @json): \(@json),"
   ')
 
+  # The menu leads with items.root.label, and the shell synthesizes that row
+  # itself -- labelled "Go" -- when no source provides one. So the one string
+  # the defaults never spell is the first one anybody reads. Supply the row,
+  # unless the defaults have grown one of their own.
+  local root_row
+  root_row=$(strip_jsonc <"$DEFAULT_MENU" | jq -r --argjson t "$map" '
+    if has("root") then empty
+    else
+      ($t["Go"] // "") as $label
+      | if $label == "" then empty
+        else "  \"root\": {\"label\": \($label | @json)}," end
+    end
+  ')
+  if [[ -n $root_row ]]; then
+    entries="$root_row"$'\n'"$entries"
+  fi
+
   rows=$(printf '%s\n' "$entries" | grep -c .)
   printf '  // >>> omarchy-language begin locale=%s source=%s rows=%s\n' \
     "$(basename "$(table_for "$locale")" .tsv)" "$(source_hash)" "$rows"
