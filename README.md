@@ -11,7 +11,7 @@ for regional formats when you want, say, a Slovenian keyboard, an English
 desktop, and metric dates.
 
 ```
-omarchy plugin add https://github.com/<you>/language.git --enable
+omarchy plugin add https://github.com/sbelcl/omarchy-language.git --enable
 ```
 
 ## What it does
