@@ -10,9 +10,19 @@ bar: a searchable list of every UTF-8 locale glibc ships, and a second list
 for regional formats when you want, say, a Slovenian keyboard, an English
 desktop, and metric dates.
 
-```
+```bash
 omarchy plugin add https://github.com/sbelcl/omarchy-language.git --enable
 ```
+
+Or, to set the language, translate the menu and install the Slovenian clock
+in one go — the path to hand someone who just wants a Slovenian desktop:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sbelcl/omarchy-language/master/setup | bash -s -- --with-clock
+```
+
+`setup` takes a locale (`bash -s -- de_DE.UTF-8`), is safe to re-run, and is
+the way to refresh the menu translation after an Omarchy update.
 
 ## What it does
 
@@ -119,6 +129,18 @@ Set from Setup → Plugins, or inline on the widget's `shell.json` entry:
 ```json
 { "id": "imnos.language", "display": "Icon" }
 ```
+
+## The rest of the desktop
+
+Two companion pieces, because a plugin cannot reach into another plugin's QML:
+
+- [omarchy-clock-sl](https://github.com/sbelcl/omarchy-clock-sl) — the clock
+  with Slovenian day and month names. It declares `clonedFrom`, so it takes the
+  built-in clock's place in the bar and gives it back when removed.
+- [omacom/omarchy#7284](https://github.com/omacom/omarchy/issues/7284) — a
+  translation layer for the shell's own strings, so the panels and dialogs
+  stop needing a fork per panel. Prototype:
+  [sbelcl/omarchy@i18n-prototype](https://github.com/sbelcl/omarchy/tree/i18n-prototype).
 
 ## Development
 

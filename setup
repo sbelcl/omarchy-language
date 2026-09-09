@@ -1,0 +1,112 @@
+#!/bin/bash
+#
+# Set up an Omarchy desktop in another language, in one command:
+#
+#   curl -fsSL https://raw.githubusercontent.com/sbelcl/omarchy-language/master/setup | bash
+#
+# Defaults to Slovenian. Pass a locale for anything else:
+#
+#   ... | bash -s -- de_DE.UTF-8
+#
+# Options:
+#   --with-clock   also install the Slovenian clock widget (sl only)
+#   --no-menu      install the plugin but leave the menu in English
+#
+# Everything here is idempotent: run it again after an Omarchy update to
+# refresh the menu translation against the new defaults.
+
+set -euo pipefail
+
+LOCALE="sl_SI.UTF-8"
+WITH_CLOCK=0
+WITH_MENU=1
+
+PLUGIN_REPO="https://github.com/sbelcl/omarchy-language.git"
+PLUGIN_ID="imnos.language"
+CLOCK_REPO="https://github.com/sbelcl/omarchy-clock-sl.git"
+CLOCK_ID="sbelcl.clock"
+PLUGIN_DIR="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
+
+say() { printf '\n\033[1m%s\033[0m\n' "$*"; }
+note() { printf '  %s\n' "$*"; }
+fail() { printf '\nsetup: %s\n' "$*" >&2; exit 1; }
+
+while (( $# > 0 )); do
+  case "$1" in
+    --with-clock) WITH_CLOCK=1 ;;
+    --no-menu) WITH_MENU=0 ;;
+    -h | --help) sed -n '2,20p' "$0" | sed 's|^# \{0,1\}||'; exit 0 ;;
+    -*) fail "unknown option '$1'" ;;
+    *) LOCALE="$1" ;;
+  esac
+  shift
+done
+
+(( EUID == 0 )) && fail "run this as your own user, not with sudo"
+command -v omarchy >/dev/null || fail "this is for Omarchy; 'omarchy' is not on PATH"
+command -v localectl >/dev/null || fail "localectl is missing"
+
+# The locale has to be one glibc knows, or systemd will refuse to generate it.
+if ! awk -v want="$LOCALE" '$2 == "UTF-8" && $1 == want { found = 1 } END { exit !found }' \
+  /usr/share/i18n/SUPPORTED 2>/dev/null; then
+  fail "$LOCALE is not a UTF-8 locale in /usr/share/i18n/SUPPORTED"
+fi
+
+say "1/4  Installing the Language plugin"
+if [[ -d $PLUGIN_DIR ]]; then
+  note "already installed; updating"
+  omarchy plugin update "$PLUGIN_ID" --yes >/dev/null 2>&1 || note "no update available"
+else
+  omarchy plugin add "$PLUGIN_REPO" --enable --yes
+fi
+
+if (( WITH_CLOCK )); then
+  say "2/4  Installing the Slovenian clock"
+  if [[ -d $HOME/.config/omarchy/plugins/$CLOCK_ID ]]; then
+    note "already installed; updating"
+    omarchy plugin update "$CLOCK_ID" --yes >/dev/null 2>&1 || note "no update available"
+  else
+    omarchy plugin add "$CLOCK_REPO" --enable --yes
+  fi
+else
+  say "2/4  Skipping the clock widget (pass --with-clock for Slovenian day names)"
+fi
+
+say "3/4  Setting the system language to $LOCALE"
+# systemd-localed stops when idle, so the first call after a quiet spell can
+# come back slow or empty. Read it once and treat "could not tell" as "not
+# set": set-locale is a no-op when it already matches, and a needless password
+# prompt is worse than a needless no-op.
+current_locale=$(localectl status 2>/dev/null | sed -n 's/.*LANG=\([^ ]*\).*/\1/p' | head -1 || true)
+if [[ $current_locale == "$LOCALE" ]]; then
+  note "already set"
+else
+  note "asking systemd to set it -- this may want your password, and will"
+  note "generate the locale if nobody has yet"
+  localectl set-locale "LANG=$LOCALE"
+fi
+
+if (( WITH_MENU )); then
+  say "4/4  Translating the Omarchy menu"
+  table="${LOCALE%%.*}"
+  table="${table%%@*}"
+  if [[ -f "$PLUGIN_DIR/translations/$table.tsv" ]]; then
+    "$PLUGIN_DIR/menu-translate" apply "$table"
+    note "$("$PLUGIN_DIR/menu-translate" status)"
+  else
+    note "no menu translation for $table yet; the menu stays English"
+  fi
+else
+  say "4/4  Leaving the menu in English"
+fi
+
+cat <<DONE
+
+Done. Log out and back in to finish: LANG is read at login, so the desktop
+is still running the language it started in.
+
+  The bar widget shows the language and can change it later.
+  The menu switches back to English from the same panel.
+  Omarchy's own panels and dialogs stay English -- that part needs upstream:
+  https://github.com/omacom/omarchy/issues/7284
+DONE
