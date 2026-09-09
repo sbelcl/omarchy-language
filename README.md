@@ -30,6 +30,10 @@ the way to refresh the menu translation after an Omarchy update.
   yet generates it on the way through; that takes a few seconds.
 - **Formats** — sets `LC_TIME`, `LC_NUMERIC`, `LC_MONETARY`, `LC_PAPER` and
   `LC_MEASUREMENT` independently of the language, or leaves them following it.
+- **A Language row in the menu** — under Posodobi/Update, beside Timezone,
+  opening the same picker Omarchy's own settings use. This is where a language
+  selector belongs; the bar widget exists because a plugin cannot add rows to
+  the packaged menu, not because a bar is the right home for a settings action.
 - **Omarchy menu** — translates the menu itself, where a table exists for the
   language. Off by default. See below for what this can and cannot reach.
 - **Bar label** — the language code (`EN`, `SL`) or a globe glyph; the tooltip

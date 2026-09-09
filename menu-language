@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# Pick the system language from the Omarchy menu.
+#
+# Deliberately the same ten-line shape as omarchy-menu-timezone: list the
+# options, hand them to the shell's own picker, apply, say so. A language
+# selector belongs beside Timezone in the menu, not on the bar -- the bar
+# widget exists because a plugin cannot add rows to the packaged menu, not
+# because a bar widget is the right home for a settings action.
+
+set -euo pipefail
+
+DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+
+# The English string, or its translation when this system has one, so the
+# picker speaks the language the menu row was written in.
+translate() {
+  local source="$1" table
+  table="$DIR/translations/$(locale_table).tsv"
+  [[ -f $table ]] || { printf '%s' "$source"; return; }
+  awk -F'\t' -v want="$source" '$1 == want && $2 != "" { print $2; found = 1; exit }
+    END { if (!found) print want }' "$table"
+}
+
+locale_table() {
+  local current="${LANG:-}"
+  current="${current%%.*}"
+  printf '%s' "${current%%@*}"
+}
+
+current=$(localectl status 2>/dev/null | sed -n 's/.*LANG=\([^ ]*\).*/\1/p' | head -1 || true)
+
+# "<glyph>\t<label>\t<subtext>": the menu shows the glyph, never returns it,
+# and hands back "<label>\t<subtext>" -- so the locale name rides along as the
+# subtext and comes back as the stable key, whatever the label says.
+options=$(awk -f "$DIR/locales.awk" /usr/share/i18n/SUPPORTED |
+  awk -F'\t' -v current="$current" '
+    {
+      label = $2 ($3 != "" ? " (" $3 ")" : "")
+      glyph = ($1 == current) ? "󰄬" : "󰗊"
+      printf "%s\t%s\t%s\n", glyph, label, $1
+    }' | sort -t$'\t' -k2,2)
+
+choice=$(printf '%s\n' "$options" |
+  omarchy-menu-select "$(translate "Language")" -- --width 520 --maxheight 520) || exit 1
+
+locale=${choice##*$'\t'}
+[[ -n $locale ]] || exit 1
+
+localectl set-locale "LANG=$locale"
+
+# LANG is read at login, so this is the one setting the menu cannot finish.
+omarchy-notification-send \
+  "$(translate "Language")" \
+  "$(translate "Log out and back in to finish switching.")"

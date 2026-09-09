@@ -26,7 +26,8 @@ set -euo pipefail
 OMARCHY_ROOT="${OMARCHY_PATH:-/usr/share/omarchy}"
 DEFAULT_MENU="$OMARCHY_ROOT/default/omarchy/omarchy-menu.jsonc"
 USER_MENU="$HOME/.config/omarchy/extensions/omarchy-menu.jsonc"
-TABLE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/translations"
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+TABLE_DIR="$SCRIPT_DIR/translations"
 
 BEGIN_RE='^[[:space:]]*// >>> omarchy-language begin'
 END_RE='^[[:space:]]*// <<< omarchy-language end'
@@ -72,6 +73,17 @@ user_body() {
     !skipping { print }
     $0 ~ end_re { skipping = 0 }
   ' "$USER_MENU" | perl -0777 -pe 's/\A\s*\{//; s/\}\s*\z//'
+}
+
+# The plugin's own menu row: a Language entry beside Timezone, pointing at the
+# picker next to this script. It is in the block whether or not the menu is
+# translated -- the row is the point of the plugin, the translation is an
+# option on top of it. update.language is free; upstream has no such id.
+language_row() {
+  local label="$1"
+  printf '  "update.language": {"icon":"\U000F05CA","label":%s,"description":"Language","action":%s},' \
+    "$(jq -nc --arg l "$label" '$l')" \
+    "$(jq -nc --arg a "$SCRIPT_DIR/menu-language" '$a')"
 }
 
 managed_block() {
@@ -124,6 +136,11 @@ managed_block() {
   if [[ -n $root_row ]]; then
     entries="$root_row"$'\n'"$entries"
   fi
+
+  # The row's own label goes through the same table as everything else.
+  local row_label
+  row_label=$(jq -r --argjson t "$map" '$t["Language"] // "Language"' <<<'null')
+  entries="$(language_row "$row_label")"$'\n'"$entries"
 
   rows=$(printf '%s\n' "$entries" | grep -c .)
   printf '  // >>> omarchy-language begin locale=%s source=%s rows=%s\n' \
