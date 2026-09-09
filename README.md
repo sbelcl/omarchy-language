@@ -113,11 +113,27 @@ stays English, which is the right answer for Steam, Docker and Tailscale.
 - **The clock is English for a different reason.** `Qt.formatDateTime(date,
   format)` ignores the locale — it renders `Tuesday` in a process whose
   `Qt.locale()` is `sl_SI`. `date.toLocaleString(Qt.locale(), format)` takes
-  the same format string and renders `torek`. That is a one-line change inside
-  the clock plugin, so it needs `omarchy plugin clone omarchy.clock` rather
-  than anything this plugin can do.
+  the same format string and renders `torek`. That is a one-line change, but
+  it lives inside the clock's own QML, so it ships as a separate plugin:
+  [omarchy-clock-sl](https://github.com/sbelcl/omarchy-clock-sl), installed by
+  `setup --with-clock`.
 - **Non-UTF-8 locales are not offered.** systemd will not auto-generate them,
   and you do not want one.
+- **Your home folders keep the names they were created with.** `~/Documents`,
+  `~/Downloads` and the rest come from `xdg-user-dirs` at first login, in
+  whatever language was current then, and nothing renames them afterwards. A
+  machine installed in Slovenian gets *Dokumenti* and *Prenosi* from the
+  start; one switched later keeps the English names.
+
+  `setup` deliberately leaves this alone. Renaming them moves real
+  directories, and anything holding a path — scripts, an application's
+  bookmarks, your own habits — breaks quietly. If you want it anyway, and you
+  know nothing points at those paths:
+
+  ```bash
+  xdg-user-dirs-update --force
+  ```
+
 - This is the system language. Keyboard layout is a separate axis, set from
   `/etc/vconsole.conf` and shown by the built-in `omarchy.keyboard-layout`
   widget.
