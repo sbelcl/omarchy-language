@@ -13,7 +13,7 @@
 Apps	Programi
 Learn	Učenje
 Capture	Zajem
-Trigger	Sprožilec
+Trigger	Orodja
 Style	Videz
 Setup	Nastavitve
 System	Sistem
@@ -34,8 +34,8 @@ Clear all	Počisti vse
 Share	Deli
 Receive	Prejmi
 Custom	Po meri
-Defaults	Privzeto
-Config	Nastavitve
+Defaults	Privzete aplikacije
+Config	Konfiguracija
 About	O sistemu
 Community	Skupnost
 Channel	Kanal
@@ -55,7 +55,6 @@ With desktop + microphone audio	Z zvokom namizja in mikrofona
 With desktop + microphone audio + webcam	Z zvokom namizja, mikrofona in s spletno kamero
 
 # Trigger / tools
-Emoji	Emodži
 Clipboard	Odložišče
 Reminder	Opomnik
 Dictation	Narekovanje
@@ -93,7 +92,7 @@ Monitors	Zasloni
 Laptop Display	Zaslon prenosnika
 Mirror Display	Zrcali zaslon
 Keybindings	Bližnjice
-Input	Vnos
+Input	Vnosne naprave
 Touchpad	Sledilna ploščica
 Trackpad	Sledilna ploščica
 Touchpad Haptics	Odziv sledilne ploščice
@@ -102,7 +101,7 @@ Network	Omrežje
 Wi-Fi	Wi-Fi
 Nightlight	Nočna svetloba
 Screensaver	Ohranjevalnik zaslona
-Stay Awake	Ostani buden
+Stay Awake	Prepreči spanje
 Notifications	Obvestila
 Timezone	Časovni pas
 Time	Čas
@@ -114,7 +113,7 @@ Sudoless Docker	Docker brez sudo
 Direct Boot	Neposredni zagon
 Hybrid GPU	Hibridni GPE
 Hardware	Strojna oprema
-Firmware	Vdelana programska oprema
+Firmware	Firmware
 Xbox Controllers	Krmilniki Xbox
 Preinstalls	Prednameščeno
 Default Agent	Privzeti agent
@@ -125,7 +124,6 @@ Browser	Brskalnik
 Editor	Urejevalnik
 Terminal	Terminal
 Agent	Agent
-Shell	Lupina
 Plugins	Vtičniki
 Add Plugin	Dodaj vtičnik
 Remove Plugin	Odstrani vtičnik
@@ -154,7 +152,6 @@ Reset Computer	Ponastavi računalnik
 Windows	Okna
 Gaming	Igre
 Development	Razvoj
-Dev	Razvoj
 RetroArch Game Launcher	Zaganjalnik iger RetroArch
 Chromium Account	Račun Chromium
 Docker DB	Podatkovna baza Docker
