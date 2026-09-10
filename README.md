@@ -18,7 +18,7 @@ Or, to set the language, translate the menu and install the Slovenian clock
 in one go — the path to hand someone who just wants a Slovenian desktop:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sbelcl/omarchy-language/master/setup | bash -s -- --with-clock
+curl -fsSL https://raw.githubusercontent.com/sbelcl/omarchy-language/master/setup | bash -s -- --with-panels
 ```
 
 `setup` takes a locale (`bash -s -- de_DE.UTF-8`), is safe to re-run, and is
@@ -172,9 +172,22 @@ someone writes one.
 
 Two companion pieces, because a plugin cannot reach into another plugin's QML:
 
-- [omarchy-clock-sl](https://github.com/sbelcl/omarchy-clock-sl) — the clock
-  with Slovenian day and month names. It declares `clonedFrom`, so it takes the
-  built-in clock's place in the bar and gives it back when removed.
+Three translated panels, each a fork that reads `sl.json` and each declaring
+`clonedFrom`, so it takes the built-in's place in the bar and gives it back when
+removed:
+
+- [omarchy-clock-l10n](https://github.com/sbelcl/omarchy-clock-l10n) — also
+  fixes day and month names, which Omarchy renders through the C locale
+  regardless of `LANG` (upstream fix in
+  [#10955](https://github.com/omacom/omarchy/pull/10955)).
+- [omarchy-power-l10n](https://github.com/sbelcl/omarchy-power-l10n) — battery,
+  charge stats, power profile.
+- [omarchy-audio-l10n](https://github.com/sbelcl/omarchy-audio-l10n) — output,
+  input and stream volumes.
+
+Each is a fork pinned to an Omarchy release, carried by hand. If
+[#7284](https://github.com/omacom/omarchy/issues/7284) lands a translation
+layer upstream, delete them rather than maintain them.
 - [omacom/omarchy#7284](https://github.com/omacom/omarchy/issues/7284) — a
   translation layer for the shell's own strings, so the panels and dialogs
   stop needing a fork per panel. Prototype:

@@ -18,13 +18,16 @@
 set -euo pipefail
 
 LOCALE="sl_SI.UTF-8"
-WITH_CLOCK=0
+WITH_PANELS=0
 WITH_MENU=1
 
 PLUGIN_REPO="https://github.com/sbelcl/omarchy-language.git"
 PLUGIN_ID="imnos.language"
-CLOCK_REPO="https://github.com/sbelcl/omarchy-clock-sl.git"
-CLOCK_ID="sbelcl.clock"
+PANEL_REPOS=(
+  "https://github.com/sbelcl/omarchy-clock-l10n.git sbelcl.clock"
+  "https://github.com/sbelcl/omarchy-power-l10n.git sbelcl.power"
+  "https://github.com/sbelcl/omarchy-audio-l10n.git sbelcl.audio"
+)
 PLUGIN_DIR="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
 
 say() { printf '\n\033[1m%s\033[0m\n' "$*"; }
@@ -33,7 +36,7 @@ fail() { printf '\nsetup: %s\n' "$*" >&2; exit 1; }
 
 while (( $# > 0 )); do
   case "$1" in
-    --with-clock) WITH_CLOCK=1 ;;
+    --with-panels | --with-clock) WITH_PANELS=1 ;;
     --no-menu) WITH_MENU=0 ;;
     -h | --help) sed -n '2,20p' "$0" | sed 's|^# \{0,1\}||'; exit 0 ;;
     -*) fail "unknown option '$1'" ;;
@@ -60,16 +63,21 @@ else
   omarchy plugin add "$PLUGIN_REPO" --enable --yes
 fi
 
-if (( WITH_CLOCK )); then
-  say "2/5  Installing the Slovenian clock"
-  if [[ -d $HOME/.config/omarchy/plugins/$CLOCK_ID ]]; then
-    note "already installed; updating"
-    omarchy plugin update "$CLOCK_ID" --yes >/dev/null 2>&1 || note "no update available"
-  else
-    omarchy plugin add "$CLOCK_REPO" --enable --yes
-  fi
+if (( WITH_PANELS )); then
+  say "2/5  Installing the translated panels"
+  # Each declares clonedFrom, so the shell gives it the built-in's slot in the
+  # bar and hands the built-in back if it is ever removed.
+  for entry in "${PANEL_REPOS[@]}"; do
+    read -r repo id <<<"$entry"
+    if [[ -d "$HOME/.config/omarchy/plugins/$id" ]]; then
+      note "$id already installed; updating"
+      omarchy plugin update "$id" --yes >/dev/null 2>&1 || true
+    else
+      omarchy plugin add "$repo" --enable --yes
+    fi
+  done
 else
-  say "2/5  Skipping the clock widget (pass --with-clock for Slovenian day names)"
+  say "2/5  Skipping the translated panels (pass --with-panels for clock, power and audio)"
 fi
 
 say "3/5  Setting the system language to $LOCALE"
