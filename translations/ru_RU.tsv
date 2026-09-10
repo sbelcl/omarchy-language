@@ -1,0 +1,161 @@
+# Russian menu labels for the Omarchy menu.
+#
+# English<TAB>Russian. Keyed by the English string rather than by row id, so
+# a word that repeats across the menu is translated once and a row Omarchy
+# adds later using a word already in here translates itself. Anything absent
+# stays English, which is the right answer for product names: Steam, Docker,
+# Tailscale and the language names under Dev are not words to translate.
+#
+# The English string stays searchable -- it is written into each row's
+# description -- so typing "network" still finds Сеть.
+
+# Root
+Apps	Приложения
+Learn	Справка
+Capture	Захват
+Trigger	Действия
+Style	Оформление
+Setup	Настройки
+System	Система
+Go	Перейти
+
+# Common actions
+Toggle	Переключатели
+Install	Установить
+Remove	Удалить
+Update	Обновить
+Restart	Перезапустить
+Restore Default	Восстановить по умолчанию
+Reset to default	Сбросить по умолчанию
+Set one	Создать
+Set From Image	Задать из картинки
+Show all	Показать все
+Clear all	Очистить всё
+Share	Поделиться
+Receive	Принять
+Custom	Пользовательское
+Defaults	Приложения по умолчанию
+Config	Конфигурация
+About	О системе
+Community	Сообщество
+Channel	Канал
+Stable	Стабильный
+Shell	Оболочка
+
+# Capture
+Screenshot	Скриншот
+Screenrecord	Запись экрана
+Stop Screenrecording	Остановить запись
+Transcode	Изменить формат
+Crash Capture	Аварийные дампы
+Region	Область
+Window	Окно
+Display	Экран
+With no audio	Без звука
+With desktop audio	Системные звуки
+With desktop + microphone audio	Системные звуки и микрофон
+With desktop + microphone audio + webcam	Со звуком, микрофоном и камерой
+
+# Trigger / tools
+Clipboard	Буфер обмена
+Reminder	Напоминание
+Dictation	Диктовка
+Edit Text	Изменить текст
+Text	Текст
+File	Файл
+Folder	Папка
+Password	Пароль
+QR Code	QR-код
+Web App	Веб-приложение
+
+# Style
+Theme	Тема
+Extra Themes	Дополнительные темы
+Background	Обои
+Font	Шрифт
+Color	Цвет
+Transparency	Прозрачность
+Window Gaps	Отступы окон
+Menu Bar	Панель меню
+Position	Положение
+Top	Сверху
+Bottom	Снизу
+Left	Слева
+Right	Справа
+Battery Percentage	Заряд батареи
+Workspace Layout	Раскладка окон
+1-Window Ratio	Пропорции окна
+high	сильная
+mid	средняя
+low	слабая
+
+# Setup
+Monitors	Мониторы
+Laptop Display	Экран ноутбука
+Mirror Display	Дублировать экран
+Keybindings	Горячие клавиши
+Input	Устройства ввода
+Touchpad	Тачпад
+Trackpad	Трекпад
+Touchpad Haptics	Отклик тачпада
+Touchscreen	Сенсорный экран
+Network	Сеть
+Wi-Fi	Wi-Fi
+Nightlight	Ночной свет
+Screensaver	Заставка
+Stay Awake	Запрет сна
+Notifications	Уведомления
+Timezone	Часовой пояс
+Time	Время
+Security	Безопасность
+Fingerprint	Отпечаток пальца
+Drive Encryption	Шифрование диска
+Passwordless Sudo	Sudo без пароля
+Sudoless Docker	Docker без sudo
+Direct Boot	Прямая загрузка
+Hybrid GPU	Гибридный GPU
+Hardware	Оборудование
+Firmware	Прошивка
+Xbox Controllers	Контроллеры Xbox
+Preinstalls	Предустановленное ПО
+Default Agent	Агент по умолчанию
+Default Browser	Браузер по умолчанию
+Default Editor	Редактор по умолчанию
+Default Terminal	Терминал по умолчанию
+Browser	Браузер
+Editor	Редактор
+Terminal	Терминал
+Agent	Агент
+Plugins	Плагины
+Add Plugin	Добавить плагин
+Remove Plugin	Удалить плагин
+Enable Plugin	Включить плагин
+Disable Plugin	Отключить плагин
+Clone Plugin	Клонировать плагин
+Service	Сервисы
+Services	Сервисы
+Speed Test	Тест скорости
+Network Speed Test	Скорость сети
+Disk Speed Test	Скорость диска
+Process	Процессы
+Package	Пакет
+User	Пользователь
+Audio	Звук
+
+# System
+Lock	Заблокировать
+Unlock	Экран разблокировки
+Logout	Выйти из сеанса
+Suspend	Спящий режим
+Hibernate	Гибернация
+Reboot	Перезагрузка
+Shutdown	Выключение
+Reset Computer	Сброс настроек
+Windows	Окна
+Gaming	Игры
+Development	Разработка
+RetroArch Game Launcher	Игры RetroArch
+Chromium Account	Аккаунт Chromium
+Docker DB	База данных Docker
+Language	Язык
+Log out and back in to finish switching.	Выйдите из системы и войдите снова, чтобы применить изменения
