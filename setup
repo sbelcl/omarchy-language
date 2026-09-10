@@ -52,7 +52,7 @@ if ! awk -v want="$LOCALE" '$2 == "UTF-8" && $1 == want { found = 1 } END { exit
   fail "$LOCALE is not a UTF-8 locale in /usr/share/i18n/SUPPORTED"
 fi
 
-say "1/4  Installing the Language plugin"
+say "1/5  Installing the Language plugin"
 if [[ -d $PLUGIN_DIR ]]; then
   note "already installed; updating"
   omarchy plugin update "$PLUGIN_ID" --yes >/dev/null 2>&1 || note "no update available"
@@ -61,7 +61,7 @@ else
 fi
 
 if (( WITH_CLOCK )); then
-  say "2/4  Installing the Slovenian clock"
+  say "2/5  Installing the Slovenian clock"
   if [[ -d $HOME/.config/omarchy/plugins/$CLOCK_ID ]]; then
     note "already installed; updating"
     omarchy plugin update "$CLOCK_ID" --yes >/dev/null 2>&1 || note "no update available"
@@ -69,10 +69,10 @@ if (( WITH_CLOCK )); then
     omarchy plugin add "$CLOCK_REPO" --enable --yes
   fi
 else
-  say "2/4  Skipping the clock widget (pass --with-clock for Slovenian day names)"
+  say "2/5  Skipping the clock widget (pass --with-clock for Slovenian day names)"
 fi
 
-say "3/4  Setting the system language to $LOCALE"
+say "3/5  Setting the system language to $LOCALE"
 # systemd-localed stops when idle, so the first call after a quiet spell can
 # come back slow or empty. Read it once and treat "could not tell" as "not
 # set": set-locale is a no-op when it already matches, and a needless password
@@ -87,7 +87,7 @@ else
 fi
 
 if (( WITH_MENU )); then
-  say "4/4  Translating the Omarchy menu"
+  say "4/5  Translating the Omarchy menu"
   table="${LOCALE%%.*}"
   table="${table%%@*}"
   if [[ -f "$PLUGIN_DIR/translations/$table.tsv" ]]; then
@@ -97,7 +97,16 @@ if (( WITH_MENU )); then
     note "no menu translation for $table yet; the menu stays English"
   fi
 else
-  say "4/4  Leaving the menu in English"
+  say "4/5  Leaving the menu in English"
+fi
+
+say "5/5  Installing the string catalog"
+# Read by the translated panel plugins. Installed only when absent: once it is
+# in the user's config it is theirs to edit.
+if [[ -x "$PLUGIN_DIR/catalog" ]]; then
+  "$PLUGIN_DIR/catalog" install "$LOCALE" || note "no catalog for this language yet"
+else
+  note "this plugin version ships no catalog"
 fi
 
 cat <<DONE

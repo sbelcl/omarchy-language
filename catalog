@@ -1,0 +1,78 @@
+#!/bin/bash
+#
+# Install the shared string catalog that the translated panel plugins read.
+#
+# The panels are forks of Omarchy's own -- power, audio and so on -- and they
+# resolve their strings through ~/.config/omarchy/locales/<lang>.json rather
+# than carrying Slovenian inside the QML. One file, every panel, any language:
+# a translator adds ru.json without touching a line of anyone's code.
+#
+# Catalogs are named for the language, not the country. Slovenian is sl, and
+# si is Sinhala -- si_LK. The keyboard layout being called "si" is ISO 3166
+# talking about Slovenia the country, which is a different standard answering a
+# different question.
+#
+# Usage: catalog install [lang]   install if absent (default: from LANG)
+#        catalog refresh [lang]   overwrite, keeping a .bak
+#        catalog status
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+SOURCE_DIR="$SCRIPT_DIR/locales"
+TARGET_DIR="$HOME/.config/omarchy/locales"
+
+fail() { echo "catalog: $*" >&2; exit 1; }
+
+# sl_SI.UTF-8 -> sl. The codeset and the territory both go; a translation is a
+# language, and a regional catalog would be sl_SI.json alongside this one.
+language_of() {
+  local value="${1:-${LANG:-}}"
+  value="${value%%.*}"
+  value="${value%%@*}"
+  printf '%s' "${value%%_*}"
+}
+
+cmd_install() {
+  local lang; lang=$(language_of "${1:-}")
+  [[ -n $lang ]] || fail "no language to install (LANG is unset)"
+  [[ -f "$SOURCE_DIR/$lang.json" ]] || fail "no catalog shipped for '$lang'"
+
+  mkdir -p "$TARGET_DIR"
+  # Never clobber on install: once it is in the user's config it is theirs to
+  # edit, and a plugin update silently reverting their wording would be the
+  # worst kind of bug to notice.
+  if [[ -f "$TARGET_DIR/$lang.json" ]]; then
+    echo "catalog: $TARGET_DIR/$lang.json exists, leaving it alone (use 'refresh' to replace)"
+    return 0
+  fi
+  cp "$SOURCE_DIR/$lang.json" "$TARGET_DIR/$lang.json"
+  echo "catalog: installed $TARGET_DIR/$lang.json"
+}
+
+cmd_refresh() {
+  local lang; lang=$(language_of "${1:-}")
+  [[ -f "$SOURCE_DIR/$lang.json" ]] || fail "no catalog shipped for '$lang'"
+  mkdir -p "$TARGET_DIR"
+  [[ -f "$TARGET_DIR/$lang.json" ]] && cp -p "$TARGET_DIR/$lang.json" "$TARGET_DIR/$lang.json.bak"
+  cp "$SOURCE_DIR/$lang.json" "$TARGET_DIR/$lang.json"
+  echo "catalog: refreshed $TARGET_DIR/$lang.json"
+}
+
+cmd_status() {
+  local lang; lang=$(language_of "")
+  local shipped=0 installed=0
+  [[ -f "$SOURCE_DIR/$lang.json" ]] && shipped=$(jq 'length' "$SOURCE_DIR/$lang.json" 2>/dev/null || echo 0)
+  [[ -f "$TARGET_DIR/$lang.json" ]] && installed=$(jq 'length' "$TARGET_DIR/$lang.json" 2>/dev/null || echo 0)
+  printf 'language=%s shipped=%s installed=%s available=%s\n' \
+    "$lang" "$shipped" "$installed" \
+    "$(ls "$SOURCE_DIR"/*.json 2>/dev/null | xargs -r -n1 basename | sed 's/\.json$//' | tr '\n' ',' | sed 's/,$//')"
+}
+
+case "${1:-status}" in
+  install) shift; cmd_install "${1:-}" ;;
+  refresh) shift; cmd_refresh "${1:-}" ;;
+  status)  cmd_status ;;
+  -h | --help) sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's|^# \{0,1\}||' ;;
+  *) fail "unknown command '$1'" ;;
+esac

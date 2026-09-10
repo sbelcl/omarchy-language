@@ -150,6 +150,24 @@ Set from Setup → Plugins, or inline on the widget's `shell.json` entry:
 { "id": "imnos.language", "display": "Icon" }
 ```
 
+## The string catalog
+
+`locales/sl.json` is a plain map of English string to translation, installed to
+`~/.config/omarchy/locales/<lang>.json` by `catalog install` (and by `setup`).
+The translated panel plugins read it at runtime rather than carrying Slovenian
+inside their QML, so one file covers every panel and a translator adds `ru.json`
+without touching anyone's code.
+
+It is installed only when absent — once it is in your config it is yours to
+edit, and a plugin update quietly reverting your wording would be a miserable
+bug to find. `catalog refresh` overwrites deliberately, keeping a `.bak`.
+
+Catalogs are named for the **language**, not the country: Slovenian is `sl`.
+`si` is Sinhala (`si_LK`) — the keyboard layout being called `si` is ISO 3166
+naming Slovenia the country, a different standard answering a different
+question. A `si.json` would never load, and would collide with Sinhala the day
+someone writes one.
+
 ## The rest of the desktop
 
 Two companion pieces, because a plugin cannot reach into another plugin's QML:
