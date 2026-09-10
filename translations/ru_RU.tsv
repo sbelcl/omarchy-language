@@ -11,48 +11,50 @@
 
 # Root
 Apps	Приложения
-Learn	Обучение
+Learn	Справка
 Capture	Захват
 Trigger	Действия
 Style	Оформление
-Setup	Настройка
+Setup	Настройки
 System	Система
 Go	Перейти
 
 # Common actions
-Toggle	Переключить
+Toggle	Переключатели
 Install	Установить
 Remove	Удалить
 Update	Обновить
 Restart	Перезапустить
 Restore Default	Восстановить по умолчанию
 Reset to default	Сбросить по умолчанию
-Set one	Задать
-Set From Image	Выбрать изображение
+Set one	Создать
+Set From Image	Задать из картинки
 Show all	Показать все
 Clear all	Очистить всё
 Share	Поделиться
-Receive	Получить
+Receive	Принять
 Custom	Пользовательское
 Defaults	Приложения по умолчанию
 Config	Конфигурация
 About	О системе
 Community	Сообщество
 Channel	Канал
+Stable	Стабильный
+Shell	Оболочка
 
 # Capture
 Screenshot	Скриншот
 Screenrecord	Запись экрана
 Stop Screenrecording	Остановить запись
 Transcode	Изменить формат
-Crash Capture	Сбои
+Crash Capture	Аварийные дампы
 Region	Область
 Window	Окно
 Display	Экран
 With no audio	Без звука
 With desktop audio	Системные звуки
 With desktop + microphone audio	Системные звуки и микрофон
-With desktop + microphone audio + webcam	Системные звуки, микрофон и камера
+With desktop + microphone audio + webcam	Со звуком, микрофоном и камерой
 
 # Trigger / tools
 Clipboard	Буфер обмена
@@ -69,7 +71,7 @@ Web App	Веб-приложение
 # Style
 Theme	Тема
 Extra Themes	Дополнительные темы
-Background	Фон
+Background	Обои
 Font	Шрифт
 Color	Цвет
 Transparency	Прозрачность
@@ -81,11 +83,11 @@ Bottom	Снизу
 Left	Слева
 Right	Справа
 Battery Percentage	Заряд батареи
-Workspace Layout	Вид рабочих столов
-1-Window Ratio	Пропорция окна
-high	высокая
+Workspace Layout	Раскладка окон
+1-Window Ratio	Пропорции окна
+high	сильная
 mid	средняя
-low	низкая
+low	слабая
 
 # Setup
 Monitors	Мониторы
@@ -100,7 +102,7 @@ Touchscreen	Сенсорный экран
 Network	Сеть
 Wi-Fi	Wi-Fi
 Nightlight	Ночной свет
-Screensaver	Хранитель экрана
+Screensaver	Заставка
 Stay Awake	Запрет сна
 Notifications	Уведомления
 Timezone	Часовой пояс
@@ -128,23 +130,23 @@ Plugins	Плагины
 Add Plugin	Добавить плагин
 Remove Plugin	Удалить плагин
 Enable Plugin	Включить плагин
-Disable Plugin	Выключить плагин
+Disable Plugin	Отключить плагин
 Clone Plugin	Клонировать плагин
-Service	Служба
-Services	Службы
-Speed Test	Тесты скорости
+Service	Сервисы
+Services	Сервисы
+Speed Test	Тест скорости
 Network Speed Test	Скорость сети
 Disk Speed Test	Скорость диска
-Process	Процесс
+Process	Процессы
 Package	Пакет
 User	Пользователь
 Audio	Звук
 
 # System
 Lock	Заблокировать
-Unlock	Разблокировать
-Logout	Выйти
-Suspend	Сон
+Unlock	Экран разблокировки
+Logout	Выйти из сеанса
+Suspend	Спящий режим
 Hibernate	Гибернация
 Reboot	Перезагрузка
 Shutdown	Выключение
