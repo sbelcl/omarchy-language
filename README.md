@@ -3,6 +3,9 @@
 A system language selector for [Omarchy](https://omarchy.org) Quattro — the
 one setting the installer never asks about.
 
+Maintained in two languages by native speakers: **Slovenian** (sbelcl) and
+**Russian** (WokoFlipper).
+
 Omarchy is English-only by design: the installer picks a keyboard layout and
 nothing else, so `LANG` stays `en_US.UTF-8` until someone edits
 `/etc/locale.gen` by hand and runs `locale-gen`. This plugin puts that on the
@@ -152,21 +155,49 @@ Set from Setup → Plugins, or inline on the widget's `shell.json` entry:
 
 ## The string catalog
 
-`locales/sl.json` is a plain map of English string to translation, installed to
+`locales/<lang>.json` is what the translated panels read, installed to
 `~/.config/omarchy/locales/<lang>.json` by `catalog install` (and by `setup`).
-The translated panel plugins read it at runtime rather than carrying Slovenian
-inside their QML, so one file covers every panel and a translator adds `ru.json`
-without touching anyone's code.
+One file covers every panel, and adding a language is a file rather than code.
 
 It is installed only when absent — once it is in your config it is yours to
 edit, and a plugin update quietly reverting your wording would be a miserable
 bug to find. `catalog refresh` overwrites deliberately, keeping a `.bak`.
 
-Catalogs are named for the **language**, not the country: Slovenian is `sl`.
-`si` is Sinhala (`si_LK`) — the keyboard layout being called `si` is ISO 3166
-naming Slovenia the country, a different standard answering a different
-question. A `si.json` would never load, and would collide with Sinhala the day
-someone writes one.
+### Format
+
+A single flat JSON object. Keys are the **exact English source strings** the
+panels ask for; values are translations.
+
+```json
+{
+  "Battery": "Baterija",
+  "Start weeks on %1": "Začetek tedna: %1",
+  "Merged from %1 device": {
+    "one": "Združeno z %1 napravo",
+    "two": "Združeno z %1 napravama",
+    "few": "Združeno s %1 napravami",
+    "other": "Združeno s %1 napravami"
+  }
+}
+```
+
+- **Keys** must match the English string byte for byte. The authoritative list
+  is the key set of `locales/sl.json` — translate those. A string not in the
+  file falls back to English, which is always readable.
+- **Placeholders** are `%1`..`%9`, filled in order, and may move anywhere in
+  the translation.
+- **Plurals** are an object keyed by **CLDR category names** — `zero`, `one`,
+  `two`, `few`, `many`, `other` — not gettext's numeric `0/1/2` indices. Russian
+  uses `one`, `few`, `many`; Slovenian `one`, `two`, `few`, `other`. Any category
+  you omit falls back to `other`.
+- **Naming** is by language, not country: `sl.json`, `ru.json`. An optional
+  regional file (`sl_SI.json`) is layered on top of it. Slovenian is `sl`; `si`
+  is Sinhala (`si_LK`) — the keyboard layout being called `si` is ISO 3166
+  naming Slovenia the country, a different standard answering a different
+  question.
+
+The menu has its own table, `translations/<locale>.tsv` — `English<TAB>translation`
+per line — because the menu is data rather than QML and needs no runtime.
 
 ## The rest of the desktop
 
