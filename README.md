@@ -203,7 +203,7 @@ per line — because the menu is data rather than QML and needs no runtime.
 
 Two companion pieces, because a plugin cannot reach into another plugin's QML:
 
-Three translated panels, each a fork that reads `sl.json` and each declaring
+Four translated panels, each a fork that reads `sl.json` and each declaring
 `clonedFrom`, so it takes the built-in's place in the bar and gives it back when
 removed:
 
@@ -215,6 +215,8 @@ removed:
   charge stats, power profile.
 - [omarchy-audio-l10n](https://github.com/sbelcl/omarchy-audio-l10n) — output,
   input and stream volumes.
+- [omarchy-bluetooth-l10n](https://github.com/sbelcl/omarchy-bluetooth-l10n) —
+  adapter state, paired and nearby devices.
 
 Each is a fork pinned to an Omarchy release, carried by hand. If
 [#7284](https://github.com/omacom/omarchy/issues/7284) lands a translation
