@@ -28,6 +28,12 @@ PANEL_REPOS=(
   "https://github.com/sbelcl/omarchy-power-l10n.git sbelcl.power"
   "https://github.com/sbelcl/omarchy-audio-l10n.git sbelcl.audio"
   "https://github.com/sbelcl/omarchy-bluetooth-l10n.git sbelcl.bluetooth"
+  "https://github.com/sbelcl/omarchy-weather-l10n.git sbelcl.weather"
+  "https://github.com/sbelcl/omarchy-monitor-l10n.git sbelcl.monitor"
+  "https://github.com/sbelcl/omarchy-agents-l10n.git sbelcl.agents"
+  "https://github.com/sbelcl/omarchy-tray-l10n.git sbelcl.tray"
+  "https://github.com/sbelcl/omarchy-indicators-l10n.git sbelcl.indicators"
+  "https://github.com/sbelcl/omarchy-system-update-l10n.git sbelcl.system-update"
 )
 PLUGIN_DIR="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
 
@@ -78,7 +84,7 @@ if (( WITH_PANELS )); then
     fi
   done
 else
-  say "2/5  Skipping the translated panels (pass --with-panels for clock, power, audio and bluetooth)"
+  say "2/5  Skipping the translated panels (pass --with-panels to translate the bar)"
 fi
 
 say "3/5  Setting the system language to $LOCALE"

@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""Build a translated fork of an Omarchy bar widget from a JSON spec.
+
+Every translated panel has the same shape: copy upstream's files, drop in the
+catalog loader, route the visible strings through i18n.t(), declare
+omarchy.clonedFrom so the fork takes the built-in's slot, and record the
+difference against upstream so the fork can be re-synced by hand at the next
+release. This does that shape once, so a fork is a list of edits rather than
+an afternoon.
+
+    tools/mkfork spec.json
+
+It never publishes anything. It builds the folder, validates it, and reports
+lint against upstream; checking it in a running bar and pushing it are
+separate steps, on purpose.
+
+Spec fields:
+  repo          folder name under ~/Projects, and the GitHub repo name
+  id            plugin id, e.g. sbelcl.weather
+  clonedFrom    the built-in id this replaces, e.g. omarchy.weather
+  source        upstream directory the files are copied from
+  files         paths relative to source; directories are copied whole
+  name, displayName, description
+  loader        {file: anchor} -- "Translations { id: i18n }" goes above anchor
+  edits         {file: [[old, new], ...]} -- each old must occur, or nothing
+                is written
+  diff          files to record in upstream.diff (default: every copied file)
+  lintFiles     QML files to lint against their upstream counterparts
+"""
+import io, json, os, shutil, subprocess, sys, tempfile
+
+HOME = os.path.expanduser("~")
+HERE = os.path.dirname(os.path.realpath(__file__))
+LOADER_SRC = os.path.join(HERE, "..")          # the language plugin carries the loader
+UPSTREAM_SHELL = "/usr/share/omarchy/shell"
+QMLLINT = "/usr/lib/qt6/bin/qmllint"
+
+def die(msg):
+    sys.exit(f"mkfork: {msg}")
+
+def read(p):
+    return io.open(p, encoding="utf-8").read()
+
+def write(p, s):
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    io.open(p, "w", encoding="utf-8").write(s)
+
+def main():
+    if len(sys.argv) != 2:
+        die("usage: mkfork spec.json")
+    spec = json.load(io.open(sys.argv[1], encoding="utf-8"))
+    src = spec["source"]
+    dest = os.path.join(HOME, "Projects", spec["repo"])
+    os.makedirs(dest, exist_ok=True)
+
+    # 1. Copy upstream.
+    for rel in spec["files"]:
+        a, b = os.path.join(src, rel), os.path.join(dest, os.path.basename(rel.rstrip("/")))
+        if os.path.isdir(a):
+            shutil.rmtree(b, ignore_errors=True)
+            shutil.copytree(a, b)
+        else:
+            shutil.copy2(a, b)
+
+    # 2. Check every edit applies before writing any of them.
+    pending = {}
+    for f, pairs in spec.get("edits", {}).items():
+        path = os.path.join(dest, f)
+        s = read(path)
+        missing = [o.splitlines()[0].strip()[:60] for o, _ in pairs if o not in s]
+        if missing:
+            die(f"{f}: anchor not found: {missing}")
+        for o, n in pairs:
+            s = s.replace(o, n, 1)
+        pending[path] = s
+    for f, anchor in spec.get("loader", {}).items():
+        path = os.path.join(dest, f)
+        s = pending.get(path, read(path))
+        if anchor not in s:
+            die(f"{f}: loader anchor not found: {anchor.strip()[:60]}")
+        indent = anchor[:len(anchor) - len(anchor.lstrip())]
+        loader = (f"{indent}// Strings come from ~/.config/omarchy/locales/<language>.json.\n"
+                  f"{indent}Translations {{ id: i18n }}\n\n")
+        pending[path] = s.replace(anchor, loader + anchor, 1)
+    for path, s in pending.items():
+        write(path, s)
+
+    # 3. The catalog loader, next to every file that instantiates it.
+    loader_dirs = {os.path.dirname(os.path.join(dest, f)) for f in spec.get("loader", {})}
+    for d in loader_dirs:
+        for f in ("Translations.qml", "Translations.js"):
+            shutil.copy2(os.path.join(LOADER_SRC, f), os.path.join(d, f))
+    shutil.copy2(os.path.join(LOADER_SRC, "LICENSE"), os.path.join(dest, "LICENSE"))
+
+    # 4. Manifest: upstream's, so settings schemas and defaults survive, with
+    #    identity and clonedFrom swapped in.
+    up_manifest = spec.get("manifest") or os.path.join(src, "manifest.json")
+    m = json.load(io.open(up_manifest, encoding="utf-8"))
+    m.update({"id": spec["id"], "name": spec["name"], "version": "1.0.0",
+              "author": "sbelcl", "description": spec["description"]})
+    if "barWidget" in m:
+        m["barWidget"]["displayName"] = spec["displayName"]
+    omarchy = m.get("omarchy") or {}
+    omarchy.pop("clonePaths", None)
+    omarchy["clonedFrom"] = spec["clonedFrom"]
+    m["omarchy"] = omarchy
+    write(os.path.join(dest, "manifest.json"), json.dumps(m, ensure_ascii=False, indent=2) + "\n")
+
+    # 5. upstream.diff, labelled with paths relative to the fork.
+    out = []
+    for rel in spec.get("diff", spec["files"]):
+        mine = os.path.join(dest, os.path.basename(rel)) if "/" not in rel else os.path.join(dest, rel.split("/", 1)[1] if rel.startswith("../") else rel)
+        theirs = os.path.join(src, rel)
+        label = os.path.relpath(mine, dest)
+        r = subprocess.run(["diff", "-u", "--label", label, "--label", label, theirs, mine],
+                           capture_output=True, text=True)
+        out.append(r.stdout)
+    write(os.path.join(dest, "upstream.diff"), "".join(out))
+    changed = sum(1 for l in "".join(out).splitlines()
+                  if l[:1] in "+-" and not l.startswith(("+++", "---")))
+    print(f"built {dest}: {changed} changed lines vs upstream")
+
+    # 6. Validate, then lint each file against its upstream twin.
+    v = subprocess.run(["omarchy", "plugin", "validate", dest], capture_output=True, text=True)
+    print("manifest:", "valid" if v.returncode == 0 else f"INVALID {v.stderr.strip()}")
+    root = tempfile.mkdtemp(prefix="mkfork-lint-")
+    os.symlink(UPSTREAM_SHELL, os.path.join(root, "qs"))
+    def count(path):
+        r = subprocess.run([QMLLINT, "-I", root, path], capture_output=True, text=True)
+        return sum(1 for l in (r.stdout + r.stderr).splitlines() if l.startswith(("Warning", "Error")))
+    for rel in spec.get("lintFiles", []):
+        ours = os.path.join(dest, os.path.basename(rel)) if "/" not in rel else os.path.join(dest, rel.split("/", 1)[1] if rel.startswith("../") else rel)
+        print(f"lint {rel}: ours={count(ours)} upstream={count(os.path.join(src, rel))}")
+    shutil.rmtree(root, ignore_errors=True)
+
+if __name__ == "__main__":
+    main()

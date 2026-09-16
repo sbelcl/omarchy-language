@@ -203,20 +203,30 @@ per line — because the menu is data rather than QML and needs no runtime.
 
 Two companion pieces, because a plugin cannot reach into another plugin's QML:
 
-Four translated panels, each a fork that reads `sl.json` and each declaring
+Translated bar widgets, each a fork that reads `sl.json` and each declaring
 `clonedFrom`, so it takes the built-in's place in the bar and gives it back when
-removed:
+removed. `setup --with-panels` installs all of them.
 
-- [omarchy-clock-l10n](https://github.com/sbelcl/omarchy-clock-l10n) — also
-  fixes day and month names, which Omarchy renders through the C locale
-  regardless of `LANG` (upstream fix in
-  [#10955](https://github.com/omacom/omarchy/pull/10955)).
-- [omarchy-power-l10n](https://github.com/sbelcl/omarchy-power-l10n) — battery,
-  charge stats, power profile.
-- [omarchy-audio-l10n](https://github.com/sbelcl/omarchy-audio-l10n) — output,
-  input and stream volumes.
-- [omarchy-bluetooth-l10n](https://github.com/sbelcl/omarchy-bluetooth-l10n) —
-  adapter state, paired and nearby devices.
+| Widget | What it covers |
+|---|---|
+| [clock](https://github.com/sbelcl/omarchy-clock-l10n) | calendar; also fixes day and month names ([#10955](https://github.com/omacom/omarchy/pull/10955)) |
+| [power](https://github.com/sbelcl/omarchy-power-l10n) | battery, charge stats, power profile |
+| [audio](https://github.com/sbelcl/omarchy-audio-l10n) | output, input and stream volumes |
+| [bluetooth](https://github.com/sbelcl/omarchy-bluetooth-l10n) | adapter state, paired and nearby devices |
+| [weather](https://github.com/sbelcl/omarchy-weather-l10n) | conditions panel; also fixes forecast day names |
+| [monitor](https://github.com/sbelcl/omarchy-monitor-l10n) | brightness, text size, scale |
+| [agents](https://github.com/sbelcl/omarchy-agents-l10n) | AI usage; also localises durations, dates, plurals and money |
+| [tray](https://github.com/sbelcl/omarchy-tray-l10n) | the manage popup and pin/hide actions |
+| [indicators](https://github.com/sbelcl/omarchy-indicators-l10n) | notification, night light, recording, stay-awake, dictation tooltips |
+| [system update](https://github.com/sbelcl/omarchy-system-update-l10n) | the pending-updates tooltip |
+
+The **network** panel is deliberately left alone: 71 strings across nearly 2,000
+lines, in the file upstream changes most. The keyboard layout indicator has
+nothing of Omarchy's to translate — its tooltip comes from xkb.
+
+`tools/mkfork` builds a fork from a JSON spec: it copies upstream, applies the
+edits (refusing to write anything if one does not apply), drops in the catalog
+loader, sets `clonedFrom`, records `upstream.diff`, and lints against upstream.
 
 Each is a fork pinned to an Omarchy release, carried by hand. If
 [#7284](https://github.com/omacom/omarchy/issues/7284) lands a translation
