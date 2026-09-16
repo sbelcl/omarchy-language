@@ -72,12 +72,12 @@ test("rowValue answers with SUPPORTED's spelling, not the caller's", () => {
 })
 
 test("rowLabel separates locales that differ only by modifier", () => {
-  assert.equal(M.rowLabel(M.findRow(rows, "be_BY.UTF-8")), "Belarusian (Belarus)")
-  assert.equal(M.rowLabel(M.findRow(rows, "be_BY@latin")), "Belarusian (Belarus, latin)")
+  assert.equal(M.rowLabel(M.findRow(rows, "be_BY.UTF-8")), "беларуская (Belarus)")
+  assert.equal(M.rowLabel(M.findRow(rows, "be_BY@latin")), "беларуская (Belarus, latin)")
 })
 
 test("describe falls back to the raw name for a locale off the table", () => {
-  assert.equal(M.describe(rows, "en_US.UTF-8"), "American English (United States)")
+  assert.equal(M.describe(rows, "en_US.UTF-8"), "English (United States)")
   assert.equal(M.describe(rows, "C.UTF-8"), "C.UTF-8")
   assert.equal(M.describe(rows, ""), "Not set")
 })
@@ -93,10 +93,10 @@ test("options sort by label and carry the name as searchable description", () =>
   const opts = M.options(rows)
   assert.deepEqual(opts.map(o => o.label), [
     "Afar (Eritrea)",
-    "American English (United States)",
-    "Belarusian (Belarus)",
-    "Belarusian (Belarus, latin)",
-    "Slovenian (Slovenia)",
+    "English (United States)",
+    "slovenščina (Slovenia)",
+    "беларуская (Belarus)",
+    "беларуская (Belarus, latin)",
   ])
   assert.equal(opts[0].description, "aa_ER")
 })
@@ -129,7 +129,7 @@ test("setLocaleArgs spells out every format variable it owns", () => {
   assert.deepEqual(args.slice(2), M.FORMAT_VARS.map(v => v + "=en_GB.UTF-8"))
 })
 
-// --- sessionIsStale / staleMessage -----------------------------------------
+// --- sessionIsStale ---------------------------------------------------------
 
 test("sessionIsStale ignores codeset spelling", () => {
   assert.equal(M.sessionIsStale({ LANG: "sl_SI.UTF-8" }, { LANG: "sl_SI.utf8" }), false)
@@ -160,21 +160,8 @@ test("sessionIsStale says nothing when it cannot tell", () => {
   assert.equal(M.sessionIsStale(undefined, undefined), false)
 })
 
-test("staleMessage names the language the session is still running", () => {
-  assert.equal(
-    M.staleMessage(rows, { LANG: "sl_SI.UTF-8" }, { LANG: "en_US.UTF-8" }),
-    "Session is still American English (United States). Log out and back in to switch.")
-})
 
-test("staleMessage says formats when only the formats moved", () => {
-  assert.equal(
-    M.staleMessage(rows, { LANG: "sl_SI.UTF-8", LC_TIME: "en_GB.UTF-8" }, { LANG: "sl_SI.UTF-8" }),
-    "Log out and back in to apply the new formats.")
-})
 
-test("staleMessage is empty for a current session", () => {
-  assert.equal(M.staleMessage(rows, { LANG: "sl_SI.UTF-8" }, { LANG: "sl_SI.utf8" }), "")
-})
 
 // --- errorMessage ----------------------------------------------------------
 
@@ -189,6 +176,30 @@ test("errorMessage passes localectl's own sentence through", () => {
     M.errorMessage("Failed to set locale: Specified locale is not installed: xx_XX", 1),
     "Specified locale is not installed: xx_XX")
   assert.equal(M.errorMessage("", 3), "Could not set the system language (exit 3)")
+})
+
+// --- endonyms --------------------------------------------------------------
+
+test("a language names itself where we know how", () => {
+  assert.equal(M.endonym("sl_SI.UTF-8", "Slovenian"), "slovenščina")
+  assert.equal(M.endonym("ru_RU.UTF-8", "Russian"), "русский")
+  assert.equal(M.endonym("ja_JP.UTF-8", "Japanese"), "日本語")
+})
+
+test("si is Sinhala, as it is everywhere else here", () => {
+  assert.equal(M.endonym("si_LK.UTF-8", "Sinhala"), "සිංහල")
+})
+
+test("an unlisted language keeps the English name glibc ships", () => {
+  assert.equal(M.endonym("agr_PE", "Aguaruna"), "Aguaruna")
+  assert.equal(M.endonym("", "Whatever"), "Whatever")
+})
+
+test("rowLabel uses the endonym and keeps the territory", () => {
+  const [sl] = M.parseLocales("sl_SI.UTF-8\tSlovenian\tSlovenia")
+  assert.equal(M.rowLabel(sl), "slovenščina (Slovenia)")
+  const [latin] = M.parseLocales("be_BY@latin\tBelarusian\tBelarus")
+  assert.equal(M.rowLabel(latin), "беларуская (Belarus, latin)")
 })
 
 // --- menu status -----------------------------------------------------------
@@ -212,16 +223,6 @@ test("menuTableFor matches a table to the locale in force", () => {
   assert.equal(M.menuTableFor([], "sl_SI.UTF-8"), "")
 })
 
-test("menuStatusText never implies more than the menu moves", () => {
-  const on = { state: "on", rows: 320, available: ["sl_SI"] }
-  assert.match(M.menuStatusText(on, rows, "sl_SI.UTF-8"), /320 menu rows.*stay English/)
-  assert.match(
-    M.menuStatusText({ state: "stale", rows: 320, available: ["sl_SI"] }, rows, "sl_SI.UTF-8"),
-    /^Out of date/)
-  assert.match(
-    M.menuStatusText({ state: "off", rows: 0, available: [] }, rows, "sl_SI.UTF-8"),
-    /^No menu translation for Slovenian \(Slovenia\)/)
-})
 
 // --- menu-translate --------------------------------------------------------
 //

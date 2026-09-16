@@ -85,6 +85,130 @@ function rowValue(rows, name) {
   return row ? row.name : ""
 }
 
+// What a language calls itself. A picker that says "Slovenian" is naming the
+// language in a language the reader may not have yet -- the whole point of the
+// list is that they are looking for the one they do speak. Anything absent
+// falls back to the English name glibc ships, which is still readable.
+//
+// Note si is Sinhala here, as it is everywhere: Slovenian is sl. The keyboard
+// layout called "si" is ISO 3166 naming Slovenia the country.
+var ENDONYMS = {
+  "af": "Afrikaans",
+  "am": "አማርኛ",
+  "an": "aragonés",
+  "ar": "العربية",
+  "ast": "asturianu",
+  "az": "azərbaycan",
+  "be": "беларуская",
+  "bg": "български",
+  "bn": "বাংলা",
+  "bo": "བོད་སྐད",
+  "br": "brezhoneg",
+  "bs": "bosanski",
+  "ca": "català",
+  "cs": "čeština",
+  "cy": "Cymraeg",
+  "da": "dansk",
+  "de": "Deutsch",
+  "dv": "ދިވެހި",
+  "dz": "རྫོང་ཁ",
+  "el": "Ελληνικά",
+  "en": "English",
+  "eo": "Esperanto",
+  "es": "español",
+  "et": "eesti",
+  "eu": "euskara",
+  "fa": "فارسی",
+  "fi": "suomi",
+  "fo": "føroyskt",
+  "fr": "français",
+  "fy": "Frysk",
+  "ga": "Gaeilge",
+  "gd": "Gàidhlig",
+  "gl": "galego",
+  "gu": "ગુજરાતી",
+  "gv": "Gaelg",
+  "ha": "Hausa",
+  "he": "עברית",
+  "hi": "हिन्दी",
+  "hr": "hrvatski",
+  "hu": "magyar",
+  "hy": "հայերեն",
+  "id": "Bahasa Indonesia",
+  "ig": "Igbo",
+  "is": "íslenska",
+  "it": "italiano",
+  "ja": "日本語",
+  "ka": "ქართული",
+  "kk": "қазақ",
+  "km": "ខ្មែរ",
+  "kn": "ಕನ್ನಡ",
+  "ko": "한국어",
+  "kw": "Kernewek",
+  "ky": "кыргызча",
+  "lb": "Lëtzebuergesch",
+  "lo": "ລາວ",
+  "lt": "lietuvių",
+  "lv": "latviešu",
+  "mk": "македонски",
+  "ml": "മലയാളം",
+  "mn": "монгол",
+  "mr": "मराठी",
+  "ms": "Bahasa Melayu",
+  "mt": "Malti",
+  "my": "မြန်မာ",
+  "nb": "norsk bokmål",
+  "ne": "नेपाली",
+  "nl": "Nederlands",
+  "nn": "nynorsk",
+  "oc": "occitan",
+  "or": "ଓଡ଼ିଆ",
+  "pa": "ਪੰਜਾਬੀ",
+  "pl": "polski",
+  "ps": "پښتو",
+  "pt": "português",
+  "ro": "română",
+  "ru": "русский",
+  "sd": "سنڌي",
+  "si": "සිංහල",
+  "sk": "slovenčina",
+  "sl": "slovenščina",
+  "sq": "shqip",
+  "sr": "српски",
+  "sv": "svenska",
+  "sw": "Kiswahili",
+  "ta": "தமிழ்",
+  "te": "తెలుగు",
+  "tg": "тоҷикӣ",
+  "th": "ไทย",
+  "ti": "ትግርኛ",
+  "tk": "türkmen",
+  "tr": "Türkçe",
+  "tt": "татар",
+  "ug": "ئۇيغۇرچە",
+  "uk": "українська",
+  "ur": "اردو",
+  "uz": "oʻzbek",
+  "vi": "Tiếng Việt",
+  "wa": "walon",
+  "xh": "isiXhosa",
+  "yo": "Yorùbá",
+  "zh": "中文",
+  "zu": "isiZulu"
+}
+
+// The language half of a locale name: sl_SI.UTF-8 -> sl.
+function languageCode(name) {
+  var value = String(name || "").trim()
+  var cut = value.search(/[_.@]/)
+  return (cut === -1 ? value : value.substring(0, cut)).toLowerCase()
+}
+
+function endonym(name, fallback) {
+  var found = ENDONYMS[languageCode(name)]
+  return found || String(fallback || "")
+}
+
 // "Belarusian (Belarus)", or "Belarusian (Belarus, latin)" where a modifier
 // is the only thing separating two otherwise identically named locales.
 function rowLabel(row) {
@@ -94,8 +218,11 @@ function rowLabel(row) {
   var qualifiers = []
   if (row.territory) qualifiers.push(row.territory)
   if (modifier) qualifiers.push(modifier)
-  if (qualifiers.length === 0) return row.language
-  return row.language + " (" + qualifiers.join(", ") + ")"
+  // The language names itself; the territory stays as glibc spells it, so an
+  // entry reads "slovenščina (Slovenia)" rather than being half-guessed.
+  var name = endonym(row.name, row.language)
+  if (qualifiers.length === 0) return name
+  return name + " (" + qualifiers.join(", ") + ")"
 }
 
 // What to call the locale in force. Falls back to the raw name so a system
@@ -166,17 +293,6 @@ function sessionIsStale(systemVars, sessionVars) {
   return false
 }
 
-// "" when the session is current. Naming the language the session is still
-// running beats a bare "log out": it says what the log out is worth.
-function staleMessage(rows, systemVars, sessionVars) {
-  if (!sessionIsStale(systemVars, sessionVars)) return ""
-  var systemLang = String((systemVars || {}).LANG || "")
-  var sessionLang = String((sessionVars || {}).LANG || "")
-  if (!sameLocale(systemLang, sessionLang))
-    return "Session is still " + describe(rows, sessionLang) + ". Log out and back in to switch."
-  return "Log out and back in to apply the new formats."
-}
-
 // `menu-translate status` prints one line of key=value pairs.
 function parseMenuStatus(text) {
   var out = { state: "off", locale: "", rows: 0, available: [] }
@@ -205,17 +321,6 @@ function menuTableFor(available, lang) {
   return ""
 }
 
-// The menu is the only translatable surface in the shell, so the panel says
-// so plainly rather than implying the whole desktop moves with it.
-function menuStatusText(status, rows, lang) {
-  var table = menuTableFor(status.available, lang)
-  if (table === "") return "No menu translation for " + describe(rows, lang) + " yet."
-  if (status.state === "stale")
-    return "Out of date: Omarchy's menu changed since these " + status.rows + " rows were copied."
-  if (status.state === "on") return status.rows + " menu rows translated. Bar and panels stay English."
-  return "Translate the Omarchy menu. Bar and panels stay English."
-}
-
 // polkit refusals and the shell's own "no agent" case are the failures worth
 // naming: everything else localectl says is already a sentence.
 function errorMessage(stderr, exitCode) {
@@ -231,11 +336,11 @@ if (typeof module !== "undefined" && module.exports) {
     FORMAT_VARS: FORMAT_VARS,
     FOLLOW_LANGUAGE: FOLLOW_LANGUAGE,
     localeVarNames: localeVarNames,
+    languageCode: languageCode,
+    endonym: endonym,
     parseMenuStatus: parseMenuStatus,
     menuTableFor: menuTableFor,
-    menuStatusText: menuStatusText,
     sessionIsStale: sessionIsStale,
-    staleMessage: staleMessage,
     parseLocales: parseLocales,
     parseSystemLocale: parseSystemLocale,
     localeKey: localeKey,
