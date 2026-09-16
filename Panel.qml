@@ -46,6 +46,17 @@ Panel {
   // the shell that is data rather than QML string literals, so it is the one
   // surface a plugin can translate. Everything else stays English.
   property var menuStatus: ({ state: "off", locale: "", rows: 0, available: [] })
+
+  // The menu is the only surface a plugin can translate, so the caption says
+  // so plainly rather than implying the whole desktop moves with the switch.
+  readonly property string menuCaption: {
+    if (menuTable === "") return i18n.t("No menu translation for %1 yet.", Model.describe(locales, systemLang))
+    if (menuStatus.state === "stale")
+      return i18n.t("Out of date: Omarchy's menu changed since these %1 rows were copied.", menuStatus.rows)
+    if (menuStatus.state === "on")
+      return i18n.t("%1 menu rows translated. Bar and panels stay English.", menuStatus.rows)
+    return i18n.t("Translate the Omarchy menu. Bar and panels stay English.")
+  }
   property bool menuBusy: false
   readonly property string menuTable: Model.menuTableFor(menuStatus.available, systemLang)
   readonly property bool menuAvailable: menuTable !== ""
@@ -64,7 +75,13 @@ Panel {
     return out
   }
 
-  readonly property string staleText: Model.staleMessage(locales, localeVars, sessionVars)
+  readonly property string staleText: {
+    if (!Model.sessionIsStale(localeVars, sessionVars)) return ""
+    if (!Model.sameLocale(localeVars.LANG || "", sessionVars.LANG || ""))
+      return i18n.t("Session is still %1. Log out and back in to switch.",
+                    Model.describe(locales, sessionVars.LANG || ""))
+    return i18n.t("Log out and back in to apply the new formats.")
+  }
   readonly property bool needsLogout: staleText !== ""
 
   readonly property string systemLang: String(localeVars.LANG || "")
@@ -72,7 +89,12 @@ Panel {
   readonly property string formatsValue: Model.formatsValue(locales, systemLang, localeVars.LC_TIME || "")
   readonly property string barLabel: iconLabel ? glyph : Model.shortCode(systemLang)
   readonly property var languageOptions: Model.options(locales)
-  readonly property var formatOptions: Model.formatOptions(locales)
+  readonly property var formatOptions: {
+    var opts = Model.formatOptions(locales).slice()
+    if (opts.length > 0)
+      opts[0] = { value: opts[0].value, label: i18n.t("Same as language"), description: "" }
+    return opts
+  }
 
   // Sections the cursor can reach. Rows that are not on screen are not in the
   // ring: the log-out row only exists once there is something to log out for,
@@ -162,6 +184,8 @@ Panel {
     var url = String(Qt.resolvedUrl("."))
     return url.indexOf("file://") === 0 ? url.substring(7) : url
   }
+
+  Translations { id: i18n }
 
   Component.onCompleted: {
     loadLocales()
@@ -305,7 +329,7 @@ Panel {
             spacing: Style.space(2)
 
             Text {
-              text: "Language"
+              text: i18n.t("Language")
               color: root.bar.foreground
               font.family: root.bar.fontFamily
               font.pixelSize: Style.font.title
@@ -336,7 +360,7 @@ Panel {
           spacing: Style.space(8)
 
           PanelSectionHeader {
-            text: "DISPLAY LANGUAGE"
+            text: i18n.t("DISPLAY LANGUAGE")
             foreground: root.bar.foreground
             fontFamily: root.bar.fontFamily
           }
@@ -348,8 +372,8 @@ Panel {
             enabled: !root.applying && root.locales.length > 0
             opacity: enabled ? 1 : 0.5
             fontFamily: root.bar.fontFamily
-            placeholderText: "Search languages..."
-            emptyText: "No such language"
+            placeholderText: i18n.t("Search languages...")
+            emptyText: i18n.t("No such language")
             options: root.languageOptions
             value: root.languageValue
             hasCursor: root.cursorActive && root.focusSection === "language"
@@ -366,7 +390,7 @@ Panel {
           spacing: Style.space(8)
 
           PanelSectionHeader {
-            text: "FORMATS"
+            text: i18n.t("FORMATS")
             foreground: root.bar.foreground
             fontFamily: root.bar.fontFamily
           }
@@ -375,7 +399,7 @@ Panel {
             width: parent.width
             wrapMode: Text.WordWrap
             textFormat: Text.PlainText
-            text: "Dates, numbers, currency, paper size and units."
+            text: i18n.t("Dates, numbers, currency, paper size and units.")
             color: Qt.darker(root.bar.foreground, 1.5)
             font.family: root.bar.fontFamily
             font.pixelSize: Style.font.caption
@@ -388,8 +412,8 @@ Panel {
             enabled: !root.applying && root.locales.length > 0
             opacity: enabled ? 1 : 0.5
             fontFamily: root.bar.fontFamily
-            placeholderText: "Search regions..."
-            emptyText: "No such region"
+            placeholderText: i18n.t("Search regions...")
+            emptyText: i18n.t("No such region")
             options: root.formatOptions
             value: root.formatsValue
             hasCursor: root.cursorActive && root.focusSection === "formats"
@@ -412,7 +436,7 @@ Panel {
           spacing: Style.space(8)
 
           PanelSectionHeader {
-            text: "OMARCHY MENU"
+            text: i18n.t("OMARCHY MENU")
             foreground: root.bar.foreground
             fontFamily: root.bar.fontFamily
           }
@@ -445,7 +469,7 @@ Panel {
               textFormat: Text.PlainText
               text: root.menuError !== ""
                 ? root.menuError
-                : Model.menuStatusText(root.menuStatus, root.locales, root.systemLang)
+                : root.menuCaption
               color: root.menuError !== "" ? Color.urgent : Qt.darker(root.bar.foreground, 1.3)
               font.family: root.bar.fontFamily
               font.pixelSize: Style.font.bodySmall
@@ -455,7 +479,7 @@ Panel {
           Button {
             visible: root.menuStatus.state === "stale"
             width: parent.width
-            text: "Refresh translation"
+            text: i18n.t("Refresh translation")
             iconText: "󰑐"
             fontSize: Style.font.bodySmall
             foreground: root.bar.foreground
@@ -479,7 +503,7 @@ Panel {
           textFormat: Text.PlainText
           text: {
             if (root.errorText !== "") return root.errorText
-            if (root.applying) return "Applying... a language that has never been generated takes a moment."
+            if (root.applying) return i18n.t("Applying... a language that has never been generated takes a moment.")
             return root.staleText
           }
           color: root.errorText !== "" ? Color.urgent : Qt.darker(root.bar.foreground, 1.3)
@@ -490,7 +514,7 @@ Panel {
         Button {
           visible: root.needsLogout
           width: parent.width
-          text: "Log out"
+          text: i18n.t("Log out")
           iconText: "󰍃"
           fontSize: Style.font.bodySmall
           foreground: root.bar.foreground
