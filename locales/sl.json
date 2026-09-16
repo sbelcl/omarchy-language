@@ -1,4 +1,7 @@
 {
+  "%1 Monthly": "Mesečno (%1)",
+  "%1 Session": "Seja (%1)",
+  "%1 Weekly": "Tedensko (%1)",
   "%1 menu rows translated. Bar and panels stay English.": "Prevedenih vrstic menija: %1. Vrstica in plošče ostanejo v angleščini.",
   "%1 prompt": {
     "few": "%1 pozivi",
