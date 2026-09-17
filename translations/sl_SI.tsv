@@ -110,7 +110,7 @@ Fingerprint	Prstni odtis
 Drive Encryption	Šifriranje diska
 Passwordless Sudo	Sudo brez gesla
 Sudoless Docker	Docker brez sudo
-Direct Boot	Neposredni zagon
+Direct Boot	Zagon brez menija
 Hybrid GPU	Hibridni GPE
 Hardware	Strojna oprema
 Firmware	Firmware
