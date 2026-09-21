@@ -1,0 +1,159 @@
+# Georgian menu labels for the Omarchy menu.
+#
+# English<TAB>Georgian. Keyed by the English string rather than by row id, so
+# a word that repeats across the menu is translated once and a row Omarchy
+# adds later using a word already in here translates itself. Anything absent
+# stays English, which is the right answer for product names: Steam, Docker,
+# Tailscale and the language names under Dev are not words to translate.
+#
+# The English string stays searchable -- it is written into each row's
+# description -- so typing "network" still finds ქსელი.
+
+# Root
+Apps	აპლიკაციები
+Learn	სწავლა
+Capture	გადაღება
+Trigger	ტრიგერი
+Style	იერსახე
+Setup	პარამეტრები
+System	სისტემა
+Go	გადასვლა
+
+# Common actions
+Toggle	გადართვა
+Install	დაყენება
+Remove	წაშლა
+Update	განახლება
+Restart	გადატვირთვა
+Restore Default	ნაგულისხმევის აღდგენა
+Reset to default	ნაგულისხმევზე დაბრუნება
+Set one	არჩევა
+Set From Image	სურათიდან დაყენება
+Show all	ყველას ჩვენება
+Clear all	ყველას გასუფთავება
+Share	გაზიარება
+Receive	მიღება
+Custom	მორგებული
+Defaults	ნაგულისხმევი
+Config	კონფიგურაცია
+About	შესახებ
+Community	თემი
+Channel	არხი
+
+# Capture
+Screenshot	ეკრანის ანაბეჭდი
+Screenrecord	ეკრანის ჩაწერა
+Stop Screenrecording	ჩაწერის შეჩერება
+Transcode	გადაკოდირება
+Crash Capture	ავარიის ჩაწერა
+Region	არე
+Window	ფანჯარა
+Display	ეკრანი
+With no audio	ხმის გარეშე
+With desktop audio	სისტემის ხმით
+With desktop + microphone audio	სისტემის ხმით + მიკროფონით
+With desktop + microphone audio + webcam	სისტემის ხმით + მიკროფონით + ვებკამერით
+
+# Trigger / tools
+Clipboard	ბუფერი
+Reminder	შეხსენება
+Dictation	კარნახი
+Edit Text	ტექსტის რედაქტირება
+Text	ტექსტი
+File	ფაილი
+Folder	საქაღალდე
+Password	პაროლი
+QR Code	QR კოდი
+Web App	ვებ-აპლიკაცია
+
+# Style
+Theme	თემა
+Extra Themes	დამატებითი თემები
+Background	ფონი
+Font	შრიფტი
+Color	ფერი
+Transparency	გამჭვირვალობა
+Window Gaps	ფანჯრების დაშორება
+Menu Bar	მენიუს ზოლი
+Position	მდებარეობა
+Top	ზემოთ
+Bottom	ქვემოთ
+Left	მარცხნივ
+Right	მარჯვნივ
+Battery Percentage	ბატარეის პროცენტი
+Workspace Layout	სამუშაო სივრცის განლაგება
+1-Window Ratio	1 ფანჯრის პროპორცია
+high	მაღალი
+mid	საშუალო
+low	დაბალი
+
+# Setup
+Monitors	მონიტორები
+Laptop Display	ლეპტოპის ეკრანი
+Mirror Display	ეკრანის დუბლირება
+Keybindings	კლავიშების კომბინაციები
+Input	შეყვანა
+Touchpad	სენსორული პანელი
+Trackpad	ტრეკპადი
+Touchpad Haptics	სენსორული პანელის ვიბრაცია
+Touchscreen	სენსორული ეკრანი
+Network	ქსელი
+Wi-Fi	Wi-Fi
+Nightlight	ღამის რეჟიმი
+Screensaver	ეკრანმზოგი
+Stay Awake	ფხიზლად დარჩენა
+Notifications	შეტყობინებები
+Timezone	დროის სარტყელი
+Time	დრო
+Security	უსაფრთხოება
+Fingerprint	თითის ანაბეჭდი
+Drive Encryption	დისკის დაშიფვრა
+Passwordless Sudo	sudo პაროლის გარეშე
+Sudoless Docker	Docker sudo-ს გარეშე
+Direct Boot	პირდაპირი ჩატვირთვა
+Hybrid GPU	ჰიბრიდული GPU
+Hardware	აპარატურა
+Firmware	ჩაშენებული პროგრამული უზრუნველყოფა
+Xbox Controllers	Xbox კონტროლერები
+Preinstalls	წინასწარი დაყენება
+Default Agent	ნაგულისხმევი აგენტი
+Default Browser	ნაგულისხმევი ბრაუზერი
+Default Editor	ნაგულისხმევი რედაქტორი
+Default Terminal	ნაგულისხმევი ტერმინალი
+Browser	ბრაუზერი
+Editor	რედაქტორი
+Terminal	ტერმინალი
+Agent	აგენტი
+Plugins	მოდულები
+Add Plugin	მოდულის დამატება
+Remove Plugin	მოდულის წაშლა
+Enable Plugin	მოდულის ჩართვა
+Disable Plugin	მოდულის გამორთვა
+Clone Plugin	მოდულის კლონირება
+Service	სერვისი
+Services	სერვისები
+Speed Test	სიჩქარის ტესტი
+Network Speed Test	ქსელის სიჩქარის ტესტი
+Disk Speed Test	დისკის სიჩქარის ტესტი
+Process	პროცესი
+Package	პაკეტი
+User	მომხმარებელი
+Audio	აუდიო
+
+# System
+Lock	დაბლოკვა
+Unlock	განბლოკვა
+Logout	გასვლა
+Suspend	ლოდინის რეჟიმი
+Hibernate	ძილის რეჟიმი
+Reboot	გადატვირთვა
+Shutdown	გამორთვა
+Reset Computer	კომპიუტერის აღდგენა
+Windows	ფანჯრები
+Gaming	თამაშები
+Development	პროგრამირება
+RetroArch Game Launcher	RetroArch თამაშების გამშვები
+Chromium Account	Chromium ანგარიში
+Docker DB	Docker მონაცემთა ბაზა
+Language	ენა
+Log out and back in to finish switching.	გადართვის დასასრულებლად გადით სისტემიდან და ხელახლა შედით.
