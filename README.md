@@ -190,6 +190,11 @@ panels ask for; values are translations.
   `two`, `few`, `many`, `other` — not gettext's numeric `0/1/2` indices. Russian
   uses `one`, `few`, `many`; Slovenian `one`, `two`, `few`, `other`. Any category
   you omit falls back to `other`.
+- **A few keys select behaviour rather than wording.** `"km/h"` names the wind
+  unit the weather panel shows: `"m/s"` converts the value, anything else
+  prints km/h with whatever label you give (so `"км/ч"` localises the label
+  without changing the number). `"MMMM d"` and `"ddd M/d"` are Qt date
+  patterns, not words.
 - **Naming** is by language, not country: `sl.json`, `ru.json`. An optional
   regional file (`sl_SI.json`) is layered on top of it. Slovenian is `sl`; `si`
   is Sinhala (`si_LK`) — the keyboard layout being called `si` is ISO 3166
