@@ -57,9 +57,12 @@ done
 
 # --- panel catalogs --------------------------------------------------------
 
-# Every catalog is the same set of keys in a different language: the panels look
-# up the English string, so a key one catalog is missing is a string that falls
-# back to English in that language alone.
+# The catalogs are not required to agree on keys, for the same reason the menu
+# tables are not: a language may carry a string the others have not reached yet,
+# and a key a catalog lacks simply stays English there. Holding them in lockstep
+# would mean every new string waits for all three native speakers. Coverage is
+# reported against the reference so the gap stays visible, but only malformed
+# data fails the run.
 reference=locales/sl.json
 
 for catalog in locales/*.json; do
@@ -73,12 +76,14 @@ for catalog in locales/*.json; do
   [ "$(jq '[..|strings|select(. == "")]|length' "$catalog")" = 0 ] ||
     fail "$catalog has empty translations"
 
-  missing=$(jq -r -n --slurpfile r "$reference" --slurpfile c "$catalog" \
-    '($r[0]|keys) - ($c[0]|keys) | join(" ")')
-  extra=$(jq -r -n --slurpfile r "$reference" --slurpfile c "$catalog" \
-    '($c[0]|keys) - ($r[0]|keys) | join(" ")')
-  [ -z "$missing" ] || fail "$catalog is missing keys: $missing"
-  [ -z "$extra" ] || fail "$catalog has keys $reference does not: $extra"
+  if [ "$catalog" != "$reference" ]; then
+    missing=$(jq -r -n --slurpfile r "$reference" --slurpfile c "$catalog" \
+      '($r[0]|keys) - ($c[0]|keys) | join(" ")')
+    extra=$(jq -r -n --slurpfile r "$reference" --slurpfile c "$catalog" \
+      '($c[0]|keys) - ($r[0]|keys) | join(" ")')
+    [ -z "$missing" ] || echo "  note: not in $catalog, stays English: $missing"
+    [ -z "$extra" ] || echo "  note: ahead of $reference: $extra"
+  fi
 
   # %1 is substituted by the caller; a translation that drops it loses the
   # number or name the string was built around.
