@@ -9,6 +9,12 @@
     "other": "%1 pozivov",
     "two": "%1 poziva"
   },
+  "%1 reminder": {
+    "few": "%1 opomniki",
+    "one": "%1 opomnik",
+    "other": "%1 opomnikov",
+    "two": "%1 opomnika"
+  },
   "%1 session": {
     "few": "%1 seje",
     "one": "%1 seja",
@@ -62,6 +68,7 @@
   "Display": "Zaslon",
   "Draining watts": "Izčrpavanje vatov",
   "Easy listening": "Prijetno poslušanje",
+  "Enter the number of minutes": "Vnesite število minut",
   "Even day": "Enakomeren dan",
   "FEELS": "OBČUTEK",
   "FIXED BRIGHTNESS": "STALNA SVETLOST",
@@ -81,6 +88,7 @@
   "In %1 · out %2 · cache read %3 · cache write %4": "Vhod %1 · izhod %2 · branje predpomnilnika %3 · pisanje predpomnilnika %4",
   "Inhaling kilowatts": "Vdihavanje kilovatov",
   "Injecting electrons": "Vbrizgavanje elektronov",
+  "Invalid reminder": "Neveljaven opomnik",
   "LIFE": "ŽIVLJENJE",
   "LIMITS": "OMEJITVE",
   "LIVE TO": "ŽIVETI DO",
