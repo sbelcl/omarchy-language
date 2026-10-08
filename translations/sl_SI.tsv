@@ -111,7 +111,7 @@ Drive Encryption	Šifriranje diska
 Passwordless Sudo	Sudo brez gesla
 Sudoless Docker	Docker brez sudo
 Direct Boot	Zagon brez menija
-Hybrid GPU	Hibridni GPE
+Hybrid GPU	Hibridni GPU
 Hardware	Strojna oprema
 Firmware	Firmware
 Xbox Controllers	Krmilniki Xbox
@@ -178,10 +178,10 @@ Full width	Polna širina
 Close window	Zapri okno
 Close all windows	Zapri vsa okna
 Lock system	Zakleni sistem
-Toggle window floating/tiling	Preklopi plavajoče/tlakovano okno
+Toggle window floating/tiling	Preklopi plavajoče/mozaično okno
 Toggle window split	Preklopi razdelitev okna
 Pop window out (float & pin)	Izloči okno (plavajoče in pripeto)
-Pseudo window	Psevdo okno
+Pseudo window	Psevdookno
 Universal copy	Univerzalno kopiraj
 Universal paste	Univerzalno prilepi
 Universal cut	Univerzalno izreži
@@ -207,14 +207,14 @@ Swap window to the left	Zamenjaj okno z levim
 Swap window to the right	Zamenjaj okno z desnim
 Swap window up	Zamenjaj okno z zgornjim
 Swap window down	Zamenjaj okno s spodnjim
-Focus on next window	Fokus na naslednje okno
-Focus on previous window	Fokus na prejšnje okno
-Focus on next monitor	Fokus na naslednji zaslon
-Focus on previous monitor	Fokus na prejšnji zaslon
-Focus on left window	Fokus na levo okno
-Focus on right window	Fokus na desno okno
-Focus on above window	Fokus na zgornje okno
-Focus on below window	Fokus na spodnje okno
+Focus on next window	Osredotoči na naslednje okno
+Focus on previous window	Osredotoči na prejšnje okno
+Focus on next monitor	Osredotoči na naslednji zaslon
+Focus on previous monitor	Osredotoči na prejšnji zaslon
+Focus on left window	Osredotoči na levo okno
+Focus on right window	Osredotoči na desno okno
+Focus on above window	Osredotoči na zgornje okno
+Focus on below window	Osredotoči na spodnje okno
 Move window	Premakni okno
 Resize window	Spremeni velikost okna
 Expand window left	Razširi okno v levo
@@ -245,8 +245,8 @@ Move window to group on right	Premakni okno v desno skupino
 Move window to group on top	Premakni okno v zgornjo skupino
 Move window to group on bottom	Premakni okno v spodnjo skupino
 Move active window out of group	Premakni dejavno okno iz skupine
-Move grouped window focus left	Fokus na levo okno v skupini
-Move grouped window focus right	Fokus na desno okno v skupini
+Move grouped window focus left	Osredotoči na levo okno v skupini
+Move grouped window focus right	Osredotoči na desno okno v skupini
 Toggle window grouping	Preklopi združevanje oken
 Invoke last notification	Odpri zadnje obvestilo
 Dismiss last notification	Opusti zadnje obvestilo
