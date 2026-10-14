@@ -272,6 +272,12 @@ test("menu-translate produces overrides the shell merges without damage", () => 
   }
   assert.ok(translated > 100, "expected most rows translated, got " + translated)
 
+  // "Go" names the menu itself and also the Go language under Install/Remove.
+  // The table's entry is for the first; the language keeps its name.
+  assert.equal(merged["install.development.go"].label, "Go")
+  assert.equal(merged["remove.development.go"].label, "Go")
+  assert.equal(merged.root.label, "Pojdi", "the root menu title should still translate")
+
   // The user's own row, and their comment, survive the round trip.
   assert.equal(merged.mine.action, "true")
   assert.match(fs.readFileSync(userMenu, "utf8"), /\/\/ keep me/)
