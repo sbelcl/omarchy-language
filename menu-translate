@@ -107,7 +107,12 @@ managed_block() {
     | .key as $id
     | .value as $row
     | ($row.label // $id) as $label
-    | ($t[$label] // $label) as $translated
+    # The table is keyed by English word, and "Go" is also the menu title the
+    # shell synthesizes for the root (supplied below). The rows that install
+    # or remove the Go language share the word but are a product name, so
+    # they never go through the table.
+    | (if ($id | test("\\.development\\.go$")) then $label
+       else ($t[$label] // $label) end) as $translated
     | ($row.title // "") as $title
     | $row
       + { label: $translated }
