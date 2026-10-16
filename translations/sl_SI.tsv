@@ -149,7 +149,8 @@ Hibernate	Mirovanje
 Reboot	Ponovni zagon
 Shutdown	Izklop
 Reset Computer	Ponastavi računalnik
-Windows	Okna
+# "Windows" is the operating system (Install/Remove -> Windows), so it stays
+# English; there is no menu row for the word meaning window panes.
 Gaming	Igre
 Development	Razvoj
 RetroArch Game Launcher	Zaganjalnik iger RetroArch
