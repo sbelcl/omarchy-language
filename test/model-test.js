@@ -276,6 +276,8 @@ test("menu-translate produces overrides the shell merges without damage", () => 
   // The table's entry is for the first; the language keeps its name.
   assert.equal(merged["install.development.go"].label, "Go")
   assert.equal(merged["remove.development.go"].label, "Go")
+  // Likewise "Windows" is the operating system here, not window panes.
+  assert.equal(merged["install.windows"].label, "Windows")
   assert.equal(merged.root.label, "Pojdi", "the root menu title should still translate")
 
   // The user's own row, and their comment, survive the round trip.
