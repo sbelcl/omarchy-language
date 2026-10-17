@@ -149,7 +149,8 @@ Hibernate	ძილის რეჟიმი
 Reboot	გადატვირთვა
 Shutdown	გამორთვა
 Reset Computer	კომპიუტერის აღდგენა
-Windows	ფანჯრები
+# "Windows" is the operating system (Install/Remove -> Windows), so it stays
+# English; there is no menu row for the word meaning window panes.
 Gaming	თამაშები
 Development	პროგრამირება
 RetroArch Game Launcher	RetroArch თამაშების გამშვები
