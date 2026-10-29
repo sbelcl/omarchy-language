@@ -1,0 +1,317 @@
+# French menu labels for the Omarchy menu.
+#
+# English<TAB>French. Keyed by the English string rather than by row id, so
+# a word that repeats across the menu is translated once and a row Omarchy
+# adds later using a word already in here translates itself. Anything absent
+# stays English, which is the right answer for product names: Steam, Docker,
+# Tailscale and the language names under Dev are not words to translate.
+#
+# The English string stays searchable -- it is written into each row's
+# description -- so typing "network" still finds Réseau.
+
+# Root
+Apps	Applications
+Learn	Apprendre
+Capture	Capture
+Trigger	Outils
+Style	Apparence
+Setup	Réglages
+System	Système
+
+# Common actions
+Toggle	Activer/désactiver
+Install	Installer
+Remove	Supprimer
+Update	Mettre à jour
+Restart	Redémarrer
+Restore Default	Restaurer par défaut
+Reset to default	Réinitialiser
+Set one	Définir
+Set From Image	Depuis une image
+Show all	Tout afficher
+Clear all	Tout effacer
+Share	Partager
+Receive	Recevoir
+Custom	Personnalisé
+Defaults	Applications par défaut
+Config	Configuration
+About	À propos
+Community	Communauté
+Channel	Canal
+Shell	Shell
+Stable	Stable
+
+# Capture
+Screenshot	Capture d'écran
+Screenrecord	Enregistrement d'écran
+Stop Screenrecording	Arrêter l'enregistrement
+Transcode	Transcoder
+Crash Capture	Capture de plantage
+Region	Zone
+Window	Fenêtre
+Display	Écran
+With no audio	Sans son
+With desktop audio	Avec le son du bureau
+With desktop + microphone audio	Avec le son du bureau et du micro
+With desktop + microphone audio + webcam	Avec le son du bureau, du micro et la webcam
+
+# Trigger / tools
+Clipboard	Presse-papiers
+Reminder	Rappel
+Dictation	Dictée
+Edit Text	Modifier du texte
+Text	Texte
+File	Fichier
+Folder	Dossier
+Password	Mot de passe
+QR Code	QR code
+Web App	Application web
+
+# Style
+Theme	Thème
+Extra Themes	Thèmes supplémentaires
+Background	Fond d'écran
+Font	Police
+Color	Couleur
+Transparency	Transparence
+Window Gaps	Espacement des fenêtres
+Menu Bar	Barre de menu
+Position	Position
+Top	En haut
+Bottom	En bas
+Left	À gauche
+Right	À droite
+Battery Percentage	Pourcentage de batterie
+Workspace Layout	Disposition des espaces de travail
+1-Window Ratio	Proportion d'une fenêtre seule
+high	haute
+mid	moyenne
+low	basse
+
+# Setup
+Monitors	Écrans
+Laptop Display	Écran du portable
+Mirror Display	Dupliquer l'écran
+Keybindings	Raccourcis clavier
+Input	Périphériques d'entrée
+Touchpad	Pavé tactile
+Trackpad	Pavé tactile
+Touchpad Haptics	Retour haptique du pavé tactile
+Touchscreen	Écran tactile
+Network	Réseau
+Wi-Fi	Wi-Fi
+Nightlight	Lumière nocturne
+Screensaver	Économiseur d'écran
+Stay Awake	Rester éveillé
+Notifications	Notifications
+Timezone	Fuseau horaire
+Time	Heure
+Security	Sécurité
+Fingerprint	Empreinte digitale
+Drive Encryption	Chiffrement du disque
+Passwordless Sudo	Sudo sans mot de passe
+Sudoless Docker	Docker sans sudo
+Direct Boot	Démarrage direct
+Hybrid GPU	GPU hybride
+Hardware	Matériel
+Firmware	Micrologiciel
+Xbox Controllers	Manettes Xbox
+Preinstalls	Préinstallations
+Default Agent	Agent par défaut
+Default Browser	Navigateur par défaut
+Default Editor	Éditeur par défaut
+Default Terminal	Terminal par défaut
+Browser	Navigateur
+Editor	Éditeur
+Terminal	Terminal
+Agent	Agent
+Plugins	Plugins
+Add Plugin	Ajouter un plugin
+Remove Plugin	Supprimer un plugin
+Enable Plugin	Activer un plugin
+Disable Plugin	Désactiver un plugin
+Clone Plugin	Cloner un plugin
+Service	Service
+Services	Services
+Speed Test	Test de débit
+Network Speed Test	Test de débit réseau
+Disk Speed Test	Test de vitesse du disque
+Process	Processus
+Package	Paquet
+User	Utilisateur
+Audio	Audio
+
+# System
+Lock	Verrouiller
+Unlock	Déverrouiller
+Logout	Se déconnecter
+Suspend	Mettre en veille
+Hibernate	Hiberner
+Reboot	Redémarrer
+Shutdown	Éteindre
+Reset Computer	Réinitialiser l'ordinateur
+Windows	Windows
+Gaming	Jeux
+Development	Développement
+RetroArch Game Launcher	Lanceur de jeux RetroArch
+Chromium Account	Compte Chromium
+Docker DB	Base de données Docker
+Language	Langue
+Log out and back in to finish switching.	Déconnectez-vous puis reconnectez-vous pour terminer le changement.
+
+# Keybindings (Super+K). Read by menu-keybindings, which shows each binding's
+# description in this language. A description ending in a number -- "Switch to
+# workspace 3" -- is looked up without it, so one row covers every workspace.
+Omarchy menu	Menu Omarchy
+File manager	Gestionnaire de fichiers
+File manager (cwd)	Gestionnaire de fichiers (dossier courant)
+Browser (private)	Navigateur (navigation privée)
+System menu	Menu système
+Theme menu	Menu des thèmes
+Apps menu	Menu des applications
+Capture menu	Menu de capture
+Hardware menu	Menu matériel
+Power menu	Menu d'alimentation
+Toggle menu	Afficher/masquer le menu
+Full screen	Plein écran
+Tiled full screen	Plein écran en mosaïque
+Full width	Pleine largeur
+Close window	Fermer la fenêtre
+Close all windows	Fermer toutes les fenêtres
+Lock system	Verrouiller le système
+Toggle window floating/tiling	Fenêtre flottante/en mosaïque
+Toggle window split	Basculer la division de la fenêtre
+Pop window out (float & pin)	Détacher la fenêtre (flottante et épinglée)
+Pseudo window	Pseudo-fenêtre
+Universal copy	Copier (universel)
+Universal paste	Coller (universel)
+Universal cut	Couper (universel)
+Clipboard manager	Gestionnaire du presse-papiers
+Emojis	Émojis
+Color picker	Pipette à couleurs
+Screenrecording	Enregistrement d'écran
+Extract text (OCR) from screenshot	Extraire le texte (OCR) d'une capture
+Switch to workspace	Aller à l'espace de travail
+Former workspace	Espace de travail précédemment utilisé
+Previous workspace	Espace de travail précédent
+Next workspace	Espace de travail suivant
+Move window to workspace	Déplacer la fenêtre vers l'espace de travail
+Move window silently to workspace	Envoyer la fenêtre vers l'espace de travail (sans suivre)
+Move workspace to left monitor	Déplacer l'espace de travail vers l'écran de gauche
+Move workspace to right monitor	Déplacer l'espace de travail vers l'écran de droite
+Move workspace to up monitor	Déplacer l'espace de travail vers l'écran du haut
+Move workspace to down monitor	Déplacer l'espace de travail vers l'écran du bas
+Toggle workspace layout	Changer la disposition de l'espace de travail
+Scroll active workspace forward	Faire défiler l'espace de travail vers l'avant
+Scroll active workspace backward	Faire défiler l'espace de travail vers l'arrière
+Swap window to the left	Échanger avec la fenêtre de gauche
+Swap window to the right	Échanger avec la fenêtre de droite
+Swap window up	Échanger avec la fenêtre du haut
+Swap window down	Échanger avec la fenêtre du bas
+Focus on next window	Focus sur la fenêtre suivante
+Focus on previous window	Focus sur la fenêtre précédente
+Focus on next monitor	Focus sur l'écran suivant
+Focus on previous monitor	Focus sur l'écran précédent
+Focus on left window	Focus sur la fenêtre de gauche
+Focus on right window	Focus sur la fenêtre de droite
+Focus on above window	Focus sur la fenêtre du haut
+Focus on below window	Focus sur la fenêtre du bas
+Move window	Déplacer la fenêtre
+Resize window	Redimensionner la fenêtre
+Expand window left	Agrandir la fenêtre vers la gauche
+Expand window left a little	Agrandir un peu la fenêtre vers la gauche
+Expand window left a lot	Agrandir beaucoup la fenêtre vers la gauche
+Expand window down	Agrandir la fenêtre vers le bas
+Expand window down a little	Agrandir un peu la fenêtre vers le bas
+Expand window down a lot	Agrandir beaucoup la fenêtre vers le bas
+Shrink window left	Réduire la fenêtre vers la gauche
+Shrink window left a little	Réduire un peu la fenêtre vers la gauche
+Shrink window left a lot	Réduire beaucoup la fenêtre vers la gauche
+Shrink window up	Réduire la fenêtre vers le haut
+Shrink window up a little	Réduire un peu la fenêtre vers le haut
+Shrink window up a lot	Réduire beaucoup la fenêtre vers le haut
+Save window width	Mémoriser la largeur de la fenêtre
+Restore window width	Restaurer la largeur de la fenêtre
+Move window to scratchpad	Envoyer la fenêtre dans l'espace caché
+Toggle scratchpad	Afficher/masquer l'espace caché
+Toggle window transparency	Activer/désactiver la transparence de la fenêtre
+Toggle window gaps	Activer/désactiver l'espacement des fenêtres
+Toggle single-window square aspect	Format carré pour une fenêtre seule
+Reveal active window on top	Afficher la fenêtre active au premier plan
+Switch to group window	Aller à une fenêtre du groupe
+Next window in group	Fenêtre suivante du groupe
+Previous window in group	Fenêtre précédente du groupe
+Move window to group on left	Déplacer la fenêtre dans le groupe de gauche
+Move window to group on right	Déplacer la fenêtre dans le groupe de droite
+Move window to group on top	Déplacer la fenêtre dans le groupe du haut
+Move window to group on bottom	Déplacer la fenêtre dans le groupe du bas
+Move active window out of group	Sortir la fenêtre active du groupe
+Move grouped window focus left	Focus sur la fenêtre de gauche du groupe
+Move grouped window focus right	Focus sur la fenêtre de droite du groupe
+Toggle window grouping	Grouper/dégrouper les fenêtres
+Invoke last notification	Ouvrir la dernière notification
+Dismiss last notification	Fermer la dernière notification
+Dismiss all notifications	Fermer toutes les notifications
+Toggle silencing notifications	Activer/désactiver le mode silencieux
+Open notification history	Historique des notifications
+Toggle nightlight	Activer/désactiver la lumière nocturne
+Toggle locking on idle	Activer/désactiver le verrouillage en cas d'inactivité
+Toggle dictation	Activer/désactiver la dictée
+Start dictation (push-to-talk)	Démarrer la dictée (appuyer pour parler)
+Stop dictation (push-to-talk)	Arrêter la dictée (appuyer pour parler)
+Download Video from Web App	Télécharger la vidéo de l'application web
+Copy URL from Web App	Copier l'URL de l'application web
+Make webcam overlay smaller	Réduire l'incrustation de la webcam
+Make webcam overlay larger	Agrandir l'incrustation de la webcam
+Monitor scaling up	Augmenter la mise à l'échelle de l'écran
+Monitor scaling down	Diminuer la mise à l'échelle de l'écran
+Toggle laptop display	Activer/désactiver l'écran du portable
+Toggle laptop display mirroring	Activer/désactiver la duplication de l'écran du portable
+Bar panel	Panneau de la barre
+Toggle top bar	Afficher/masquer la barre
+Show battery remaining	Afficher l'autonomie restante
+Show reminders	Afficher les rappels
+Set reminder	Créer un rappel
+Clear reminders	Effacer les rappels
+Show time	Afficher l'heure
+Calendar	Calendrier
+Toggle weather	Afficher/masquer la météo
+Zoom in	Zoomer
+Reset zoom	Réinitialiser le zoom
+Power	Alimentation
+Calculator	Calculatrice
+Background switcher	Sélecteur de fond d'écran
+Activity	Activité
+Email	E-mail
+New email	Nouvel e-mail
+X Post	Publication sur X
+Music	Musique
+Music TUI	Musique (TUI)
+Passwords	Mots de passe
+Volume up	Augmenter le volume
+Volume down	Baisser le volume
+Volume up precise	Augmenter le volume (précis)
+Volume down precise	Baisser le volume (précis)
+Mute	Couper le son
+Mute microphone	Couper le micro
+Play	Lecture
+Pause	Pause
+Next track	Piste suivante
+Previous track	Piste précédente
+Switch audio output	Changer de sortie audio
+Switch media source	Changer de source multimédia
+Eject media	Éjecter le support
+Brightness up	Augmenter la luminosité
+Brightness down	Baisser la luminosité
+Brightness up precise	Augmenter la luminosité (précis)
+Brightness down precise	Baisser la luminosité (précis)
+Brightness maximum	Luminosité maximale
+Brightness minimum	Luminosité minimale
+Keyboard brightness up	Augmenter le rétroéclairage du clavier
+Keyboard brightness down	Baisser le rétroéclairage du clavier
+Keyboard backlight cycle	Changer le rétroéclairage du clavier
+Enable touchpad	Activer le pavé tactile
+Disable touchpad	Désactiver le pavé tactile
+Toggle touchpad	Activer/désactiver le pavé tactile
+Tmux keybindings	Raccourcis Tmux
+Herdr keybindings	Raccourcis Herdr
