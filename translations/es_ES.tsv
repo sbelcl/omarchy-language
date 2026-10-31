@@ -1,0 +1,161 @@
+# Spanish menu labels for the Omarchy menu.
+#
+# English<TAB>Spanish. Keyed by the English string rather than by row id, so
+# a word that repeats across the menu is translated once and a row Omarchy
+# adds later using a word already in here translates itself. Anything absent
+# stays English, which is the right answer for product names: Steam, Docker,
+# Tailscale and the language names under Dev are not words to translate.
+#
+# The English string stays searchable -- it is written into each row's
+# description -- so typing "network" still finds Red.
+
+# Root
+Apps	Aplicaciones
+Learn	Aprender
+Capture	Captura
+Trigger	Acciones
+Style	Estilo
+Setup	Configuración
+System	Sistema
+Go	Ir
+
+# Common actions
+Toggle	Alternar
+Install	Instalar
+Remove	Quitar
+Update	Actualizar
+Restart	Reiniciar
+Restore Default	Restaurar valores
+Reset to default	Restablecer
+Set one	Definir uno
+Set From Image	Definir desde imagen
+Show all	Mostrar todo
+Clear all	Limpiar todo
+Share	Compartir
+Receive	Recibir
+Custom	Personalizado
+Defaults	Valores predeterminados
+Config	Configuración
+About	Acerca de
+Community	Comunidad
+Channel	Canal
+Stable	Estable
+Shell	Shell
+
+# Capture
+Screenshot	Captura de pantalla
+Screenrecord	Grabación de pantalla
+Stop Screenrecording	Detener grabación
+Transcode	Transcodificar
+Crash Capture	Captura de errores
+Region	Región
+Window	Ventana
+Display	Pantalla
+With no audio	Sin audio
+With desktop audio	Con audio del escritorio
+With desktop + microphone audio	Con audio del escritorio y micrófono
+With desktop + microphone audio + webcam	Con audio, micrófono y cámara
+
+# Trigger / tools
+Clipboard	Portapapeles
+Reminder	Recordatorio
+Dictation	Dictado
+Edit Text	Editar texto
+Text	Texto
+File	Archivo
+Folder	Carpeta
+Password	Contraseña
+QR Code	Código QR
+Web App	Aplicación web
+
+# Style
+Theme	Tema
+Extra Themes	Temas adicionales
+Background	Fondo
+Font	Fuente
+Color	Color
+Transparency	Transparencia
+Window Gaps	Espacios entre ventanas
+Menu Bar	Barra de menú
+Position	Posición
+Top	Arriba
+Bottom	Abajo
+Left	Izquierda
+Right	Derecha
+Battery Percentage	Porcentaje de batería
+Workspace Layout	Distribución de espacios
+1-Window Ratio	Proporción de 1 ventana
+high	alta
+mid	media
+low	baja
+
+# Setup
+Monitors	Monitores
+Laptop Display	Pantalla del portátil
+Mirror Display	Duplicar pantalla
+Keybindings	Atajos de teclado
+Input	Entrada
+Touchpad	Panel táctil
+Trackpad	Trackpad
+Touchpad Haptics	Respuesta háptica del panel táctil
+Touchscreen	Pantalla táctil
+Network	Red
+Wi-Fi	Wi-Fi
+Nightlight	Luz nocturna
+Screensaver	Salvapantallas
+Stay Awake	Mantener activo
+Notifications	Notificaciones
+Timezone	Zona horaria
+Time	Hora
+Security	Seguridad
+Fingerprint	Huella dactilar
+Drive Encryption	Cifrado del disco
+Passwordless Sudo	Sudo sin contraseña
+Sudoless Docker	Docker sin sudo
+Direct Boot	Arranque directo
+Hybrid GPU	GPU híbrida
+Hardware	Hardware
+Firmware	Firmware
+Xbox Controllers	Mandos de Xbox
+Preinstalls	Preinstalaciones
+Default Agent	Agente predeterminado
+Default Browser	Navegador predeterminado
+Default Editor	Editor predeterminado
+Default Terminal	Terminal predeterminado
+Browser	Navegador
+Editor	Editor
+Terminal	Terminal
+Agent	Agente
+Plugins	Plugins
+Add Plugin	Añadir plugin
+Remove Plugin	Quitar plugin
+Enable Plugin	Activar plugin
+Disable Plugin	Desactivar plugin
+Clone Plugin	Clonar plugin
+Service	Servicio
+Services	Servicios
+Speed Test	Prueba de velocidad
+Network Speed Test	Velocidad de red
+Disk Speed Test	Velocidad de disco
+Process	Procesos
+Package	Paquete
+User	Usuario
+Audio	Audio
+
+# System
+Lock	Bloquear
+Unlock	Desbloquear
+Logout	Cerrar sesión
+Suspend	Suspender
+Hibernate	Hibernar
+Reboot	Reiniciar
+Shutdown	Apagar
+Reset Computer	Restablecer equipo
+Windows	Windows
+Gaming	Juegos
+Development	Desarrollo
+RetroArch Game Launcher	Lanzador de juegos RetroArch
+Chromium Account	Cuenta de Chromium
+Docker DB	Base de datos Docker
+Language	Idioma
+Log out and back in to finish switching.	Cierra sesión y vuelve a entrar para completar el cambio
